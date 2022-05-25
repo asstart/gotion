@@ -27,14 +27,14 @@ func TestUnmarshalTextCondition(t *testing.T) {
 	var text gotion.TextCondition
 	json.Unmarshal([]byte(source), &text)
 
-	utils.AssertEqualsString(t, "equals_string", *text.Equals)
-	utils.AssertEqualsString(t, "not_equal_string", *text.DoesntEqual)
-	utils.AssertEqualsString(t, "contains_string", *text.Contains)
-	utils.AssertEqualsString(t, "does_not_contain_string", *text.DoesntContain)
-	utils.AssertEqualsString(t, "starts_with_string", *text.StartsWith)
-	utils.AssertEqualsString(t, "ends_with_string", *text.EndsWith)
-	utils.AssertEqualsBool(t, true, *text.IsEmpty)
-	utils.AssertEqualsBool(t, true, *text.IsNotEmpty)
+	utils.AssertEqualsString(t, "equals_string", text.Equals)
+	utils.AssertEqualsString(t, "not_equal_string", text.DoesntEqual)
+	utils.AssertEqualsString(t, "contains_string", text.Contains)
+	utils.AssertEqualsString(t, "does_not_contain_string", text.DoesntContain)
+	utils.AssertEqualsString(t, "starts_with_string", text.StartsWith)
+	utils.AssertEqualsString(t, "ends_with_string", text.EndsWith)
+	utils.AssertEqualsBool(t, true, text.IsEmpty)
+	utils.AssertEqualsBool(t, true, text.IsNotEmpty)
 }
 
 func TestUnmarshalDatabasePage(t *testing.T) {
@@ -458,10 +458,10 @@ func TestUnmarshalDatabasePage(t *testing.T) {
 
 func TestMarshalRichTextContainsFilter(t *testing.T) {
 	var f = gotion.Filter{
-		Property: utils.StrPtr("Landmark"),
+		Property: *utils.StrPtr("Landmark"),
 		RichText: &gotion.TextCondition{
 
-			Contains: utils.StrPtr("Bridge"),
+			Contains: *utils.StrPtr("Bridge"),
 		},
 	}
 
@@ -483,15 +483,15 @@ func TestMarshalCompoundFilter(t *testing.T) {
 	var f = gotion.Filter{
 		And: []gotion.Filter{
 			gotion.Filter{
-				Property: utils.StrPtr("Seen"),
-				CheckBox: &gotion.CheckboxCondition{
+				Property: *utils.StrPtr("Seen"),
+				Checkbox: &gotion.CheckboxCondition{
 					Equals: utils.BoolPtr(false),
 				},
 			},
 			gotion.Filter{
-				Property: utils.StrPtr("Yearly visitor count"),
+				Property: *utils.StrPtr("Yearly visitor count"),
 				Number: &gotion.NumberCondition{
-					GreaterThan: utils.FloatPtr(1000000),
+					GreaterThan: *utils.FloatPtr(1000000),
 				},
 			},
 		},
@@ -525,22 +525,22 @@ func TestMarshalMiltililevelCompoundFilter(t *testing.T) {
 	var f = gotion.Filter{
 		Or: []gotion.Filter{
 			gotion.Filter{
-				Property: utils.StrPtr("Description"),
+				Property: *utils.StrPtr("Description"),
 				RichText: &gotion.TextCondition{
-					Contains: utils.StrPtr("fish"),
+					Contains: *utils.StrPtr("fish"),
 				},
 			},
 			gotion.Filter{
 				And: []gotion.Filter{
 					gotion.Filter{
-						Property: utils.StrPtr("Food group"),
+						Property: *utils.StrPtr("Food group"),
 						Select: &gotion.SelectCondition{
-							Equals: utils.StrPtr("🥦Vegetable"),
+							Equals: *utils.StrPtr("🥦Vegetable"),
 						},
 					},
 					gotion.Filter{
-						Property: utils.StrPtr("Is protein rich?"),
-						CheckBox: &gotion.CheckboxCondition{
+						Property: *utils.StrPtr("Is protein rich?"),
+						Checkbox: &gotion.CheckboxCondition{
 							Equals: utils.BoolPtr(true),
 						},
 					},
@@ -585,8 +585,8 @@ func TestMarshalMiltililevelCompoundFilter(t *testing.T) {
 
 func TestSortMarshal(t *testing.T) {
 	s := gotion.Sort{
-		Property:  utils.StrPtr("Food group"),
-		Direction: utils.StrPtr("descending"),
+		Property:  *utils.StrPtr("Food group"),
+		Direction: *utils.StrPtr("descending"),
 	}
 
 	expected := `
@@ -603,25 +603,25 @@ func TestSortMarshal(t *testing.T) {
 
 func TestDatabaseQuery(t *testing.T) {
 	query := gotion.DatabaseQuery{
-		Filter: &gotion.Filter{
-			Property: utils.StrPtr("Landmark"),
+		Filter: gotion.Filter{
+			Property: *utils.StrPtr("Landmark"),
 			RichText: &gotion.TextCondition{
 
-				Contains: utils.StrPtr("Bridge"),
+				Contains: *utils.StrPtr("Bridge"),
 			},
 		},
 		Sorts: []gotion.Sort{
 			gotion.Sort{
-				Property:  utils.StrPtr("Food group"),
-				Direction: utils.StrPtr("descending"),
+				Property:  *utils.StrPtr("Food group"),
+				Direction: *utils.StrPtr("descending"),
 			},
 			gotion.Sort{
-				Property:  utils.StrPtr("Name"),
-				Direction: utils.StrPtr("ascending"),
+				Property:  *utils.StrPtr("Name"),
+				Direction: *utils.StrPtr("ascending"),
 			},
 		},
-		StartCursor: utils.StrPtr("3-295-0235"),
-		PageSize:    utils.IntPtr(50),
+		StartCursor: *utils.StrPtr("3-295-0235"),
+		PageSize:    *utils.IntPtr(50),
 	}
 
 	marshaled, _ := json.Marshal(query)
@@ -1420,7 +1420,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	utils.AssertEqualsString(t, "Hello", rt.Text.Content)
 	// //utils.AssertNil(t, rt.Text.Link)
 	//utils.AssertNotNill(t, rt.Annotations)
-	utils.AssertEqualsBool(t, true,  rt.Annotations.Bold)
+	utils.AssertEqualsBool(t, true, rt.Annotations.Bold)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Italic)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Strikethrough)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Underline)
@@ -1512,7 +1512,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNotNill(t, rt.Annotations)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Bold)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Italic)
-	utils.AssertEqualsBool(t, true,  rt.Annotations.Strikethrough)
+	utils.AssertEqualsBool(t, true, rt.Annotations.Strikethrough)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Underline)
 	utils.AssertEqualsBool(t, false, rt.Annotations.Code)
 	utils.AssertEqualsString(t, "default", rt.Annotations.Color)
