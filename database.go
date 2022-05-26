@@ -79,10 +79,10 @@ type DBRollupProperty struct {
 }
 
 type DatabaseQuery struct {
-	Filter      Filter `json:"filter,omitempty"`
-	Sorts       []Sort `json:"sorts,omitempty"`
-	StartCursor string `json:"start_cursor,omitempty"`
-	PageSize    int    `json:"page_size,omitempty"`
+	Filter      *Filter `json:"filter,omitempty"`
+	Sorts       []Sort  `json:"sorts,omitempty"`
+	StartCursor string  `json:"start_cursor,omitempty"`
+	PageSize    int     `json:"page_size,omitempty"`
 }
 
 type Sort struct {
@@ -91,22 +91,26 @@ type Sort struct {
 	Direction string `json:"direction"`
 }
 
+//Add rollup, formula, people
 type Filter struct {
 	Property  string `json:"property,omitempty"`
 	Timestamp string `json:"timestamp,omitempty"`
 
-	RichText    *TextCondition        `json:"rich_text,omitempty"`
-	Title       *TextCondition        `json:"title,omitempty"`
-	URL         *TextCondition        `json:"url,omitempty"`
-	Email       *TextCondition        `json:"email,omitempty"`
-	PhoneNumber *TextCondition        `json:"phone_number,omitempty"`
-	Number      *NumberCondition      `json:"number,omitempty"`
-	Checkbox    *CheckboxCondition    `json:"checkbox,omitempty"`
-	Select      *SelectCondition      `json:"select,omitempty"`
-	MultiSelect *MultiSelectCondition `json:"multi_select,omitempty"`
-	File        *FileCondition        `json:"files,omitempty"`
-	Relation    *RelationCondition    `json:"relation,omitempty"`
-	Date        *DateCondition        `json:"date,omitempty"`
+	RichText     *TextCondition        `json:"rich_text,omitempty"`
+	Title        *TextCondition        `json:"title,omitempty"`
+	URL          *TextCondition        `json:"url,omitempty"`
+	Email        *TextCondition        `json:"email,omitempty"`
+	PhoneNumber  *TextCondition        `json:"phone_number,omitempty"`
+	Number       *NumberCondition      `json:"number,omitempty"`
+	Checkbox     *CheckboxCondition    `json:"checkbox,omitempty"`
+	Select       *SelectCondition      `json:"select,omitempty"`
+	MultiSelect  *MultiSelectCondition `json:"multi_select,omitempty"`
+	File         *FileCondition        `json:"files,omitempty"`
+	Relation     *RelationCondition    `json:"relation,omitempty"`
+	Date         *DateCondition        `json:"date,omitempty"`
+	People       *PeopleCondition       `json:"people,omitempty"`
+	CreatedBy    *PeopleCondition       `json:"created_by,omitempty"`
+	LastEditedBy *PeopleCondition       `json:"last_edited_by,omitempty"`
 
 	And []Filter `json:"and,omitempty"`
 	Or  []Filter `json:"or,omitempty"`
@@ -123,17 +127,22 @@ type TextCondition struct {
 	IsNotEmpty    bool   `json:"is_not_empty,omitempty"` //In doc written "only true", test what happened if false will be passed here
 }
 
+//If we pass 0 as value, fields will be erased completely from result json.
 type NumberCondition struct {
 	Equals               float64 `json:"equals,omitempty"`
 	DoesntEqual          float64 `json:"does_not_equal,omitempty"`
 	GreaterThan          float64 `json:"greater_than,omitempty"`
 	LessThan             float64 `json:"less_than,omitempty"`
 	GreaterThanOrEqualTo float64 `json:"greater_than_or_equal_to,omitempty"`
-	LessThanOrEqualTo    float64 `json:"less_than_or_equals_to,omitempty"`
+	LessThanOrEqualTo    float64 `json:"less_than_or_equal_to,omitempty"`
 	IsEmpty              bool    `json:"is_empty,omitempty"`
 	IsNotEmpty           bool    `json:"is_not_empty,omitempty"`
 }
 
+//by default go treats bool_field=false as empty
+//and if tag omitempty is present, bool_field=false will be erased from result json
+//that's why I use *bool here, instead bool.
+//https://github.com/golang/go/issues/13284
 type CheckboxCondition struct {
 	Equals      *bool `json:"equals,omitempty"` //Doesnt work with bool type, need check
 	DoesntEqual *bool `json:"does_not_equal,omitempty"`
@@ -148,7 +157,7 @@ type SelectCondition struct {
 
 type MultiSelectCondition struct {
 	Contains     string `json:"contains,omitempty"`
-	DoentContain string `json:"does_not_contain,omitempty"`
+	DoesntContain string `json:"does_not_contain,omitempty"`
 	IsEmpty      bool   `json:"is_empty,omitempty"`
 	IsNotEmpty   bool   `json:"is_not_empty,omitempty"`
 }

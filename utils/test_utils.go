@@ -37,14 +37,17 @@ func Minimise(jsn string) string {
 
 func AssertNil(t *testing.T, actual interface{}) {
 	t.Helper()
-	if actual == nil ||
-		((reflect.ValueOf(actual).Kind() == reflect.Ptr ||
-			reflect.ValueOf(actual).Kind() == reflect.Map ||
-			reflect.ValueOf(actual).Kind() == reflect.Slice ||
-			reflect.ValueOf(actual).Kind() == reflect.Chan ||
-			reflect.ValueOf(actual).Kind() == reflect.Func ||
-			reflect.ValueOf(actual).Kind() == reflect.UnsafePointer ||
-			reflect.ValueOf(actual).Kind() == reflect.Interface) && reflect.ValueOf(actual).IsNil()) {
+	if actual == nil {
+		t.Logf(`%s Value is nill`, success)
+		return
+	}
+	if (reflect.ValueOf(actual).Kind() == reflect.Ptr ||
+		reflect.ValueOf(actual).Kind() == reflect.Map ||
+		reflect.ValueOf(actual).Kind() == reflect.Slice ||
+		reflect.ValueOf(actual).Kind() == reflect.Chan ||
+		reflect.ValueOf(actual).Kind() == reflect.Func ||
+		reflect.ValueOf(actual).Kind() == reflect.UnsafePointer ||
+		reflect.ValueOf(actual).Kind() == reflect.Interface) && reflect.ValueOf(actual).IsNil() {
 		t.Logf(`%s Value is nill`, success)
 	} else {
 		t.Fatalf(`%s Expected nil value, but: %v`, failed, PrettyPrint(actual))

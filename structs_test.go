@@ -603,7 +603,7 @@ func TestSortMarshal(t *testing.T) {
 
 func TestDatabaseQuery(t *testing.T) {
 	query := gotion.DatabaseQuery{
-		Filter: gotion.Filter{
+		Filter: &gotion.Filter{
 			Property: *utils.StrPtr("Landmark"),
 			RichText: &gotion.TextCondition{
 
