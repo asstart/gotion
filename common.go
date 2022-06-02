@@ -1,37 +1,38 @@
 package gotion
 
 type RichText struct {
-	Type        string      `json:"type"`
-	PlainText   string      `json:"plain_text"`
-	Href        string      `json:"href"`
-	Annotations Annotations `json:"annotations"`
-	Text        Text        `json:"text,omitempty"`
-	Mention     Mention     `json:"mention,omitempty"`
-	Equation    Equation    `json:"equation,omitempty"`
+	Type        string       `json:"type,omitempty"`
+	PlainText   string       `json:"plain_text,omitempty"`
+	Href        string       `json:"href,omitempty"`
+	Annotations *Annotations `json:"annotations,omitempty"`
+	//One of followings should be define
+	Text     *Text     `json:"text,omitempty"`
+	Mention  *Mention  `json:"mention,omitempty"`
+	Equation *Equation `json:"equation,omitempty"`
 }
 
 type Annotations struct {
-	Bold          bool   `json:"bold,omitempty"`
-	Italic        bool   `json:"italic,omitempty"`
-	Strikethrough bool   `json:"strikethrough,omitempty"`
-	Underline     bool   `json:"underline,omitempty"`
-	Code          bool   `json:"code,omitempty"`
-	Color         string `json:"color,omitempty"`
+	Bold          bool   `json:"bold"`
+	Italic        bool   `json:"italic"`
+	Strikethrough bool   `json:"strikethrough"`
+	Underline     bool   `json:"underline"`
+	Code          bool   `json:"code"`
+	Color         string `json:"color"`
 }
 
 type Text struct {
 	Content string `json:"content"`
-	Link    Link   `json:"link,omitempty"`
+	Link    *Link  `json:"link,omitempty"`
 }
 
 type Mention struct {
-	MentionType string `json:"type"`
+	MentionType string `json:"type,omitempty"`
 
-	User     string   `json:"user,omitempty"`
-	Page     string   `json:"page,omitempty"`
-	Database string   `json:"database,omitempty"`
-	Date     string   `json:"date,omitempty"`
-	Template Template `json:"template_mention,omitempty"`
+	User     *User         `json:"user,omitempty"`
+	Page     string        `json:"page,omitempty"`
+	Database string        `json:"database,omitempty"`
+	Date     *DateProperty `json:"date,omitempty"`
+	Template *Template     `json:"template_mention,omitempty"`
 }
 
 type Equation struct {

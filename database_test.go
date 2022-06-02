@@ -13,6 +13,11 @@ type tuple struct {
 	Expected string
 }
 
+type createdbTuple struct {
+	Source   *gotion.CreateDB
+	Expected string
+}
+
 func TestMarshalEmptyQuery(t *testing.T) {
 	source := gotion.DatabaseQuery{}
 
@@ -756,25 +761,25 @@ func TestMarshalFileQuery(t *testing.T) {
 	}
 }
 
-func TestMarshalRelationQuery(t *testing.T){
+func TestMarshalRelationQuery(t *testing.T) {
 	se := []tuple{
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
-					Contains: "tag",
+					Contains: "869ec06096fd48a7a7492b15c9502cc9",
 				},
 			}},
-			Expected: `{"filter":{"property":"relation","relation":{"contains":"tag"}}}`,
+			Expected: `{"filter":{"property":"relation","relation":{"contains":"869ec06096fd48a7a7492b15c9502cc9"}}}`,
 		},
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
-					DoesntContains: "tag",
+					DoesntContains: "869ec06096fd48a7a7492b15c9502cc9",
 				},
 			}},
-			Expected: `{"filter":{"property":"relation","relation":{"does_not_contain":"tag"}}}`,
+			Expected: `{"filter":{"property":"relation","relation":{"does_not_contain":"869ec06096fd48a7a7492b15c9502cc9"}}}`,
 		},
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
@@ -807,7 +812,7 @@ func TestMarshalRelationQuery(t *testing.T){
 	}
 }
 
-func TestMarshalPeopleQuery(t *testing.T){
+func TestMarshalPeopleQuery(t *testing.T) {
 	se := []tuple{
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
@@ -858,7 +863,7 @@ func TestMarshalPeopleQuery(t *testing.T){
 	}
 }
 
-func TestMarshalCreatedByQuery(t *testing.T){
+func TestMarshalCreatedByQuery(t *testing.T) {
 	se := []tuple{
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
@@ -909,7 +914,7 @@ func TestMarshalCreatedByQuery(t *testing.T){
 	}
 }
 
-func TestMarshalLastEditedByQuery(t *testing.T){
+func TestMarshalLastEditedByQuery(t *testing.T) {
 	se := []tuple{
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
@@ -946,6 +951,276 @@ func TestMarshalLastEditedByQuery(t *testing.T){
 				},
 			}},
 			Expected: `{"filter":{"property":"last_edited_by","last_edited_by":{"is_not_empty":true}}}`,
+		},
+	}
+
+	for _, pair := range se {
+		actual, err := json.Marshal(pair.Source)
+		utils.AssertNil(t, err)
+		utils.AssertEqualsString(
+			t,
+			utils.Minimise(pair.Expected),
+			utils.Minimise(string(actual)),
+		)
+	}
+}
+
+func TestMarshalFormulaQuery(t *testing.T) {
+	se := []tuple{
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "formula",
+				Formula: &gotion.FormulaCondition{
+					String: &gotion.TextCondition{
+						Equals: "10",
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"formula","formula":{"string":{"equals":"10"}}}}`,
+		},
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "formula",
+				Formula: &gotion.FormulaCondition{
+					Checkbox: &gotion.CheckboxCondition{
+						Equals: utils.BoolPtr(true),
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"formula","formula":{"checkbox":{"equals":true}}}}`,
+		},
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "formula",
+				Formula: &gotion.FormulaCondition{
+					Number: &gotion.NumberCondition{
+						Equals: 10,
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"formula","formula":{"number":{"equals":10}}}}`,
+		},
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "formula",
+				Formula: &gotion.FormulaCondition{
+					Date: &gotion.DateCondition{
+						Equals: "2022",
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"formula","formula":{"date":{"equals":"2022"}}}}`,
+		},
+	}
+
+	for _, pair := range se {
+		actual, err := json.Marshal(pair.Source)
+		utils.AssertNil(t, err)
+		utils.AssertEqualsString(
+			t,
+			utils.Minimise(pair.Expected),
+			utils.Minimise(string(actual)),
+		)
+	}
+}
+
+func TestMarshalTRollupQuery(t *testing.T) {
+	se := []tuple{
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "rollup",
+				Rollup: &gotion.RollupCondition{
+					Any: &gotion.RollupProperty{
+						RichText: &gotion.TextCondition{
+							Equals: "some_string",
+						},
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"rollup","rollup":{"any":{"rich_text":{"equals":"some_string"}}}}}`,
+		},
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "rollup",
+				Rollup: &gotion.RollupCondition{
+					Every: &gotion.RollupProperty{
+						RichText: &gotion.TextCondition{
+							Equals: "some_string",
+						},
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"rollup","rollup":{"every":{"rich_text":{"equals":"some_string"}}}}}`,
+		},
+		{
+			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
+				Property: "rollup",
+				Rollup: &gotion.RollupCondition{
+					None: &gotion.RollupProperty{
+						RichText: &gotion.TextCondition{
+							Equals: "some_string",
+						},
+					},
+				},
+			}},
+			Expected: `{"filter":{"property":"rollup","rollup":{"none":{"rich_text":{"equals":"some_string"}}}}}`,
+		},
+	}
+
+	for _, pair := range se {
+		actual, err := json.Marshal(pair.Source)
+		utils.AssertNil(t, err)
+		utils.AssertEqualsString(
+			t,
+			utils.Minimise(pair.Expected),
+			utils.Minimise(string(actual)),
+		)
+	}
+}
+
+func TestMarshallCreateDB(t *testing.T) {
+	se := []createdbTuple{
+		{
+			Source: &gotion.CreateDB{
+				Parent: gotion.DBParent{
+					Type:   "page_id",
+					PageID: "b0b48eac42514c2da3ab126a9986cf72",
+				},
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Hello world",
+						},
+					},
+				},
+				Properties: gotion.DBProperties{
+					"Name": gotion.DBProperty{
+						Title: struct{}{},
+					},
+				},
+			},
+			Expected: `{"parent":{"type":"page_id","page_id":"b0b48eac42514c2da3ab126a9986cf72"},"title":[{"text":{"content":"Hello world"}}],"properties":{"Name":{"title":{}}}}`,
+		},
+		{
+			Source: &gotion.CreateDB{
+				Parent: gotion.DBParent{
+					Type:   "page_id",
+					PageID: "b0b48eac42514c2da3ab126a9986cf72",
+				},
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Hello",
+						},
+						Annotations: &gotion.Annotations{
+							Italic:        true,
+							Bold:          true,
+							Underline:     true,
+							Strikethrough: true,
+							Code:          true,
+							Color:         "red",
+						},
+					},
+					gotion.RichText{
+						Mention: &gotion.Mention{
+							User: &gotion.User{
+								ID: "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+							},
+						},
+					},
+					gotion.RichText{
+						Equation: &gotion.Equation{
+							Expression: "w + orld",
+						},
+					},
+				},
+				Properties: gotion.DBProperties{
+					"Name": gotion.DBProperty{
+						Title: struct{}{},
+					},
+					"Rich text": gotion.DBProperty{
+						RichText: struct{}{},
+					},
+					"Bare number": gotion.DBProperty{
+						Number: &gotion.DBNumberProperty{
+							Format: gotion.Number,
+						},
+					},
+					"Formatted number": gotion.DBProperty{
+						Number: &gotion.DBNumberProperty{
+							Format: gotion.Number,
+						},
+					},
+					"Select": gotion.DBProperty{
+						Select: &gotion.DBSelectProperties{
+							Options: []gotion.DBSelectProperty{
+
+								gotion.DBSelectProperty{
+									Name:  "tag1",
+									Color: gotion.Blue,
+								},
+								gotion.DBSelectProperty{
+									Name:  "tag2",
+									Color: gotion.Orange,
+								},
+							},
+						},
+					},
+					"Multiselect": gotion.DBProperty{
+						MultiSelect: &gotion.DBSelectProperties{
+							Options: []gotion.DBSelectProperty{
+								gotion.DBSelectProperty{
+									Name:  "tag1_multi",
+									Color: gotion.Blue,
+								},
+								gotion.DBSelectProperty{
+									Name:  "tag2_multi",
+									Color: gotion.Orange,
+								},
+							},
+						},
+					},
+					"Date": gotion.DBProperty{
+						Date: struct{}{},
+					},
+					"People": gotion.DBProperty{
+						Date: struct{}{},
+					},
+					"Files": gotion.DBProperty{
+						Files: struct{}{},
+					},
+					"Checkbox": gotion.DBProperty{
+						Checkbox: struct{}{},
+					},
+					"URL": gotion.DBProperty{
+						URL: struct{}{},
+					},
+					"Email": gotion.DBProperty{
+						Email: struct{}{},
+					},
+					"Phone": gotion.DBProperty{
+						PhoneNumber: struct{}{},
+					},
+					"Formula": gotion.DBProperty{
+						Formula: &gotion.DBFormulatProperty{
+							Expression: "1",
+						},
+					},
+					"Created at": gotion.DBProperty{
+						CreatedTime: struct{}{},
+					},
+					"Created by": gotion.DBProperty{
+						CreatedBy: struct{}{},
+					},
+					"Updated at": gotion.DBProperty{
+						LastEditedTime: struct{}{},
+					},
+					"Updated by": gotion.DBProperty{
+						LastEditedBy: struct{}{},
+					},
+				},
+			},
+			Expected: `{"parent":{"type":"page_id","page_id":"b0b48eac42514c2da3ab126a9986cf72"},"title":[{"annotations":{"bold":true,"italic":true,"strikethrough":true,"underline":true,"code":true,"color":"red"},"text":{"content":"Hello"}},{"mention":{"user":{"id":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}},{"equation":{"expression":"w+orld"}}],"properties":{"Barenumber":{"number":{"format":"number"}},"Checkbox":{"checkbox":{}},"Createdat":{"created_time":{}},"Createdby":{"created_by":{}},"Date":{"date":{}},"Email":{"email":{}},"Files":{"files":{}},"Formattednumber":{"number":{"format":"number"}},"Formula":{"formula":{"expression":"1"}},"Multiselect":{"multi_select":{"options":[{"name":"tag1_multi","color":"blue"},{"name":"tag2_multi","color":"orange"}]}},"Name":{"title":{}},"People":{"date":{}},"Phone":{"phone_number":{}},"Richtext":{"rich_text":{}},"Select":{"select":{"options":[{"name":"tag1","color":"blue"},{"name":"tag2","color":"orange"}]}},"URL":{"url":{}},"Updatedat":{"last_edited_time":{}},"Updatedby":{"last_edited_by":{}}}}`,
 		},
 	}
 

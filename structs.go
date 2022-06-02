@@ -97,11 +97,11 @@ type Relation struct {
 }
 
 type Rollup struct {
-	RelationPropertyName string `json:"relation_property_name"`
-	RelationPropertyID   string `json:"relation_property_id"`
-	RollupPropertyName   string `json:"rollup_property_name"`
-	RollupPropertyID     string `json:"rollup_property_id"`
-	Function             string `json:"function"`
+	RelationPropertyName string         `json:"relation_property_name"`
+	RelationPropertyID   string         `json:"relation_property_id"`
+	RollupPropertyName   string         `json:"rollup_property_name"`
+	RollupPropertyID     string         `json:"rollup_property_id"`
+	Function             RollupFunction `json:"function"`
 }
 
 type Template struct {
