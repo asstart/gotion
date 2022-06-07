@@ -1084,10 +1084,7 @@ func TestMarshallCreateDB(t *testing.T) {
 	se := []createdbTuple{
 		{
 			Source: &gotion.CreateDB{
-				Parent: gotion.DBParent{
-					Type:   "page_id",
-					PageID: "b0b48eac42514c2da3ab126a9986cf72",
-				},
+				PageId: "b0b48eac42514c2da3ab126a9986cf72",
 				Title: []gotion.RichText{
 					gotion.RichText{
 						Text: &gotion.Text{
@@ -1105,10 +1102,7 @@ func TestMarshallCreateDB(t *testing.T) {
 		},
 		{
 			Source: &gotion.CreateDB{
-				Parent: gotion.DBParent{
-					Type:   "page_id",
-					PageID: "b0b48eac42514c2da3ab126a9986cf72",
-				},
+				PageId: "b0b48eac42514c2da3ab126a9986cf72",
 				Title: []gotion.RichText{
 					gotion.RichText{
 						Text: &gotion.Text{

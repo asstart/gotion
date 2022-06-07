@@ -50,6 +50,7 @@ func AssertNil(t *testing.T, actual interface{}) {
 		reflect.ValueOf(actual).Kind() == reflect.Interface) && reflect.ValueOf(actual).IsNil() {
 		t.Logf(`%s Value is nill`, success)
 	} else {
+		//TODO need to improve error message
 		t.Fatalf(`%s Expected nil value, but: %v`, failed, PrettyPrint(actual))
 	}
 }

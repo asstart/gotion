@@ -3,43 +3,123 @@ package gotion
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
 type Database struct {
-	Object         string         `json:"object"`
-	Id             string         `json:"id"`
-	CreatedTime    time.Time      `json:"created_time"`
-	CreatedBy      User           `json:"created_by"`
-	LastEditedTime time.Time      `json:"last_edited_time"`
-	LastEditedBy   User           `json:"last_edited_by"`
-	Title          []RichText     `json:"title"`
-	Icon           IconDescriptor `json:"icon"`
-	Cover          FileDescriptor `json:"cover"`
-	Properties     DBProperties   `json:"properties"`
-	ParentType     DBParent       `json:"parent"`
-	URL            string         `json:"url"`
-	Archived       bool           `json:"archived"`
+	Object         string          `json:"object"`
+	Id             string          `json:"id"`
+	CreatedTime    time.Time       `json:"created_time"`
+	CreatedBy      User            `json:"created_by"`
+	LastEditedTime time.Time       `json:"last_edited_time"`
+	LastEditedBy   User            `json:"last_edited_by"`
+	Title          []RichText      `json:"title"`
+	Icon           *IconDescriptor `json:"icon,omitempty"`
+	Cover          *FileDescriptor `json:"cover,omitempty"`
+	Properties     DBProperties    `json:"properties"`
+	ParentType     DBParent        `json:"parent"`
+	URL            string          `json:"url"`
+	Archived       bool            `json:"archived"`
 }
 
 type DBParent struct {
-	Type      string `json:"type"`
-	PageID    string `json:"page_id,omitempty"`
-	Workspace *bool  `json:"workspace,omitempty"`
+	Type      DBParentType `json:"type"`
+	PageID    string       `json:"page_id,omitempty"`
+	Workspace bool         `json:"workspace,omitempty"`
+}
+
+type DBParentType int
+
+const (
+	NoDBParentType DBParentType = iota
+	PageDBParentType
+	WorksapceDBParentType
+)
+
+var DBParentTypeToString = map[DBParentType]string{
+	PageDBParentType:      "page_id",
+	WorksapceDBParentType: "workspace",
+}
+
+var StringToDBParentType = map[string]DBParentType{
+	"page_id":   PageDBParentType,
+	"workspace": WorksapceDBParentType,
+}
+
+func (dbp DBParent) ValidateRequest() error {
+	var buff = strings.Builder{}
+	if dbp.Type == NoDBParentType {
+		buff.WriteString("DBParent.Type is empty\n")
+	}
+	if dbp.PageID == "" {
+		buff.WriteString("DBParent.PageID is empty\n")
+	}
+	var final = buff.String()
+	if final == "" {
+		return nil
+	}
+	return errors.New(buff.String())
+}
+
+func (p *DBParentType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToDBParentType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	p = &res
+	return nil
+}
+
+func (p *DBParentType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(DBParentTypeToString[*p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }
 
 type IconDescriptor struct {
 	Type     IconType      `json:"type"`
 	Emoji    *Emoji        `json:"emoji,omitempty"`
 	External *ExternalFile `json:"external,omitempty"`
-	File     *File         `json:"file,omitempty"`
+	File     *NotionFile   `json:"file,omitempty"`
+}
+
+//Notion supports icon as a notion file and this can be returned with response.
+//But in request supports only emoji and external types
+func (id IconDescriptor) ValidateRequest() error {
+	var buff = strings.Builder{}
+	if id.Type == NoIconType {
+		buff.WriteString("IconDescriptor.Type is empty")
+	}
+	if id.Type == FileIconType {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.Type in request supports only %v and %v, but not %v\n", IconTypeToString[EmojiIconType], IconTypeToString[ExternalIconType], IconTypeToString[FileIconType]))
+	}
+	if id.Type == EmojiIconType && id.Emoji == nil {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.Emoji shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[EmojiIconType]))
+	}
+	if id.Type == ExternalIconType && id.External == nil {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.External shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[ExternalIconType]))
+	}
+	var final = buff.String()
+	if final == "" {
+		return nil
+	}
+	return errors.New(buff.String())
 }
 
 type IconType int
 
 const (
-	EmojiIconType IconType = iota
+	NoIconType IconType = iota
+	EmojiIconType
 	FileIconType
 	ExternalIconType
 )
@@ -299,9 +379,70 @@ type FormulaCondition struct {
 }
 
 type CreateDB struct {
-	Parent     DBParent     `json:"parent"`
-	Title      []RichText   `json:"title,omitempty"`
-	Properties DBProperties `json:"properties"`
+	PageId     string          `json:"parent"`
+	Title      []RichText      `json:"title,omitempty"`
+	Properties DBProperties    `json:"properties"`
+	Icon       *IconDescriptor `json:"icon,omitempty"`
+	Cover      *FileDescriptor `json:"cover,omitempty"`
+}
+
+func (cdb CreateDB) ValidateRequest() error {
+	var buff = strings.Builder{}
+
+	if cdb.PageId == "" {
+		buff.WriteString("CreateDB.PageId couldn't be nil")
+	}
+
+	if cdb.Properties == nil {
+		buff.WriteString("CreateDB.Properties couldn't be nil")
+	}
+
+	if cdb.Icon != nil {
+		err := cdb.Icon.ValidateRequest()
+		if err != nil {
+			buff.WriteString(err.Error())
+		}
+	}
+
+	if cdb.Cover != nil {
+		err := cdb.Cover.ValidateRequest()
+		if err != nil {
+			buff.WriteString(err.Error())
+		}
+	}
+
+	var final = buff.String()
+	if final == "" {
+		return nil
+	}
+	return errors.New(buff.String())
+}
+
+func (cdb *CreateDB) MarshalJSON() ([]byte, error) {
+	err := cdb.ValidateRequest()
+
+	if err != nil {
+		return nil, err
+	}
+
+	type DTO struct {
+		Parent     *DBParent       `json:"parent"`
+		Title      []RichText      `json:"title,omitempty"`
+		Properties DBProperties    `json:"properties"`
+		Icon       *IconDescriptor `json:"icon,omitempty"`
+		Cover      *FileDescriptor `json:"cover,omitempty"`
+	}
+	dto := DTO{
+		Parent: &DBParent{
+			Type:   PageDBParentType,
+			PageID: cdb.PageId,
+		},
+		Title:      cdb.Title,
+		Properties: cdb.Properties,
+		Icon:       cdb.Icon,
+		Cover:      cdb.Cover,
+	}
+	return json.Marshal(dto)
 }
 
 type UpdateDB struct {
@@ -312,7 +453,8 @@ type UpdateDB struct {
 type NumberConfigFormat int
 
 const (
-	Number NumberConfigFormat = iota
+	NoNumberFormat NumberConfigFormat = iota
+	Number
 	NumberWithCommas
 	Percent
 	Dollar
@@ -458,7 +600,8 @@ func (p *NumberConfigFormat) MarshalJSON() ([]byte, error) {
 type DBPropType int
 
 const (
-	PropTypeTitle DBPropType = iota
+	NoDBPropType DBPropType = iota
+	PropTypeTitle
 	PropTypeRichText
 	PropTypeNumber
 	PropTypeSelect
@@ -609,7 +752,8 @@ func (p *Color) MarshalJSON() ([]byte, error) {
 type RollupFunction int
 
 const (
-	CountAll RollupFunction = iota
+	NoRollupFunc RollupFunction = iota
+	CountAll
 	CountValues
 	CountUniqueValues
 	CountEmpty
@@ -683,7 +827,8 @@ func (p *RollupFunction) MarshalJSON() ([]byte, error) {
 type TimestampFilterType int
 
 const (
-	CreatedTime TimestampFilterType = iota
+	NoTimestampFilterType TimestampFilterType = iota
+	CreatedTime
 	LastEditedTime
 )
 

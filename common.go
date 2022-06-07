@@ -1,5 +1,12 @@
 package gotion
 
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+)
+
 type RichText struct {
 	Type        string       `json:"type,omitempty"`
 	PlainText   string       `json:"plain_text,omitempty"`
@@ -40,9 +47,55 @@ type Equation struct {
 }
 
 type FileDescriptor struct {
-	Type         string       `json:"type"`
-	ExternalFile ExternalFile `json:"external,omitempty"`
-	NotionFile   NotionFile   `json:"file,omitempty"`
+	Type         FileDescriptorType `json:"type"`
+	ExternalFile ExternalFile       `json:"external,omitempty"`
+	NotionFile   NotionFile         `json:"file,omitempty"`
+}
+
+type FileDescriptorType int
+
+const (
+	NoFileDescriptorType FileDescriptorType = iota
+	NotionFileDescriptorType
+	ExternalFileDescriptorType
+)
+
+var FileDescriptorTypeToString = map[FileDescriptorType]string{
+	NotionFileDescriptorType:   "file",
+	ExternalFileDescriptorType: "external",
+}
+
+var StringToFileDescriptorType = map[string]FileDescriptorType{
+	"file":     NotionFileDescriptorType,
+	"external": ExternalFileDescriptorType,
+}
+
+func (fdt FileDescriptor) ValidateRequest() error {
+	if fdt.Type == NoFileDescriptorType {
+		return errors.New("FileDescriptor.Type couldn't be empty")
+	}
+	return nil
+}
+
+func (p *FileDescriptorType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToFileDescriptorType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	p = &res
+	return nil
+}
+
+func (p *FileDescriptorType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(FileDescriptorTypeToString[*p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }
 
 type ExternalFile struct {
