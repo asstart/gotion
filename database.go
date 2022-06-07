@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 type Database struct {
 	Object         string         `json:"object"`
 	Id             string         `json:"id"`
-	CreatedTime    string         `json:"created_time"`
+	CreatedTime    time.Time      `json:"created_time"`
 	CreatedBy      User           `json:"created_by"`
-	LastEditedTime string         `json:"last_edited_time"`
+	LastEditedTime time.Time      `json:"last_edited_time"`
 	LastEditedBy   User           `json:"last_edited_by"`
 	Title          []RichText     `json:"title"`
-	Icon           FileDescriptor `json:"icon"`
+	Icon           IconDescriptor `json:"icon"`
 	Cover          FileDescriptor `json:"cover"`
 	Properties     DBProperties   `json:"properties"`
 	ParentType     DBParent       `json:"parent"`
@@ -26,6 +27,54 @@ type DBParent struct {
 	Type      string `json:"type"`
 	PageID    string `json:"page_id,omitempty"`
 	Workspace *bool  `json:"workspace,omitempty"`
+}
+
+type IconDescriptor struct {
+	Type     IconType      `json:"type"`
+	Emoji    *Emoji        `json:"emoji,omitempty"`
+	External *ExternalFile `json:"external,omitempty"`
+	File     *File         `json:"file,omitempty"`
+}
+
+type IconType int
+
+const (
+	EmojiIconType IconType = iota
+	FileIconType
+	ExternalIconType
+)
+
+var IconTypeToString = map[IconType]string{
+	EmojiIconType:    "emoji",
+	FileIconType:     "file",
+	ExternalIconType: "external",
+}
+
+var StringToIconType = map[string]IconType{
+	"emoji":    EmojiIconType,
+	"file":     FileIconType,
+	"external": ExternalIconType,
+}
+
+func (p *IconType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToIconType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	p = &res
+	return nil
+}
+
+func (p *IconType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(IconTypeToString[*p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }
 
 type DBProperties map[string]DBProperty
@@ -96,9 +145,9 @@ type DatabaseQuery struct {
 }
 
 type Sort struct {
-	Property  string `json:"property,omitempty"`
-	Timestamp string `json:"timestamp,omitempty"`
-	Direction string `json:"direction"`
+	Property  string     `json:"property,omitempty"`
+	Timestamp *time.Time `json:"timestamp,omitempty"`
+	Direction string     `json:"direction"`
 }
 
 //Add filter terst with timestamp
@@ -176,15 +225,15 @@ type MultiSelectCondition struct {
 
 type DateCondition struct {
 	//should be a valid ISO 8601 date string
-	Equals string `json:"equals,omitempty"`
+	Equals *time.Time `json:"equals,omitempty"`
 	//should be a valid ISO 8601 date string
-	Before string `json:"before,omitempty"`
+	Before *time.Time `json:"before,omitempty"`
 	//should be a valid ISO 8601 date string
-	After string `json:"after,omitempty"`
+	After *time.Time `json:"after,omitempty"`
 	//should be a valid ISO 8601 date string
-	OnOrBefore string `json:"on_or_before,omitempty"`
+	OnOrBefore *time.Time `json:"on_or_before,omitempty"`
 	//should be a valid ISO 8601 date string
-	OnOrAfter  string      `json:"on_or_after,omitempty"`
+	OnOrAfter  *time.Time  `json:"on_or_after,omitempty"`
 	PastWeek   interface{} `json:"past_week,omitempty"` //This values should be part of json despite it empty. Test it
 	PastMonth  interface{} `json:"past_month,omitempty"`
 	PastYear   interface{} `json:"past_year,omitempty"`
@@ -387,7 +436,7 @@ var StringToNumberFormat = map[string]NumberConfigFormat{
 
 func (p *NumberConfigFormat) UnmarshalJSON(b []byte) error {
 	var v string
-	err := json.Unmarshal(b, v)
+	err := json.Unmarshal(b, &v)
 	if err != nil {
 		return err
 	}
@@ -476,7 +525,7 @@ var StringToPropType = map[string]DBPropType{
 
 func (p *DBPropType) UnmarshalJSON(b []byte) error {
 	var v string
-	err := json.Unmarshal(b, v)
+	err := json.Unmarshal(b, &v)
 	if err != nil {
 		return err
 	}
@@ -538,7 +587,7 @@ var StringToColor = map[string]Color{
 
 func (p *Color) UnmarshalJSON(b []byte) error {
 	var v string
-	err := json.Unmarshal(b, v)
+	err := json.Unmarshal(b, &v)
 	if err != nil {
 		return err
 	}
@@ -612,7 +661,7 @@ var StringToRollupFunction = map[string]RollupFunction{
 
 func (p *RollupFunction) UnmarshalJSON(b []byte) error {
 	var v string
-	err := json.Unmarshal(b, v)
+	err := json.Unmarshal(b, &v)
 	if err != nil {
 		return err
 	}
@@ -650,7 +699,7 @@ var StringToTimestampFilterType = map[string]TimestampFilterType{
 
 func (p *TimestampFilterType) UnmarshalJSON(b []byte) error {
 	var v string
-	err := json.Unmarshal(b, v)
+	err := json.Unmarshal(b, &v)
 	if err != nil {
 		return err
 	}

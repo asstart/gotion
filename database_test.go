@@ -3,6 +3,7 @@ package gotion_test
 import (
 	"encoding/json"
 	"testing"
+	"time"
 
 	"github.com/asstart/gotion"
 	"github.com/asstart/gotion/utils"
@@ -966,6 +967,7 @@ func TestMarshalLastEditedByQuery(t *testing.T) {
 }
 
 func TestMarshalFormulaQuery(t *testing.T) {
+	dt, _ := time.Parse(time.RFC3339, "2033-05-18T03:33:00.100+00:00")
 	se := []tuple{
 		{
 			Source: &gotion.DatabaseQuery{Filter: &gotion.Filter{
@@ -1005,11 +1007,11 @@ func TestMarshalFormulaQuery(t *testing.T) {
 				Property: "formula",
 				Formula: &gotion.FormulaCondition{
 					Date: &gotion.DateCondition{
-						Equals: "2022",
+						Equals: &dt,
 					},
 				},
 			}},
-			Expected: `{"filter":{"property":"formula","formula":{"date":{"equals":"2022"}}}}`,
+			Expected: `{"filter":{"property":"formula","formula":{"date":{"equals":"2033-05-18T03:33:00.1Z"}}}}`,
 		},
 	}
 
