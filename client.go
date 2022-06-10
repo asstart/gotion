@@ -59,7 +59,7 @@ func (nc *NotionClient) doRequest(req *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (nc *NotionClient) QueryDatabase(ctx context.Context, query DatabaseQuery, database string) (DatabasePages, error) {
+func (nc *NotionClient) QueryDatabase(ctx context.Context, query QuertyDBRq, database string) (DatabasePages, error) {
 	jsn, err := json.Marshal(query)
 	if err != nil {
 		return DatabasePages{}, err

@@ -8,7 +8,7 @@ import (
 )
 
 type RichText struct {
-	Type        string       `json:"type,omitempty"`
+	Type        RichTextType `json:"type,omitempty"`
 	PlainText   string       `json:"plain_text,omitempty"`
 	Href        string       `json:"href,omitempty"`
 	Annotations *Annotations `json:"annotations,omitempty"`
@@ -16,6 +16,48 @@ type RichText struct {
 	Text     *Text     `json:"text,omitempty"`
 	Mention  *Mention  `json:"mention,omitempty"`
 	Equation *Equation `json:"equation,omitempty"`
+}
+
+type RichTextType int
+
+const (
+	NoRichTextType RichTextType = iota
+	TextRichTextType
+	MentionRichTextType
+	EquationRichTextType
+)
+
+var StringToRichTextType = map[string]RichTextType{
+	"text":     TextRichTextType,
+	"mention":  MentionRichTextType,
+	"equation": EquationRichTextType,
+}
+
+var RichTextTypeToString = map[RichTextType]string{
+	TextRichTextType:     "text",
+	MentionRichTextType:  "mention",
+	EquationRichTextType: "equation",
+}
+
+func (p *RichTextType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToRichTextType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	*p = res
+	return nil
+}
+
+func (p *RichTextType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(RichTextTypeToString[*p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }
 
 type Annotations struct {
@@ -48,8 +90,8 @@ type Equation struct {
 
 type FileDescriptor struct {
 	Type         FileDescriptorType `json:"type"`
-	ExternalFile ExternalFile       `json:"external,omitempty"`
-	NotionFile   NotionFile         `json:"file,omitempty"`
+	ExternalFile *ExternalFile      `json:"external,omitempty"`
+	NotionFile   *NotionFile        `json:"file,omitempty"`
 }
 
 type FileDescriptorType int
@@ -87,7 +129,7 @@ func (p *FileDescriptorType) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 

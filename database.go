@@ -74,7 +74,7 @@ func (p *DBParentType) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -87,7 +87,7 @@ func (p *DBParentType) MarshalJSON() ([]byte, error) {
 
 type IconDescriptor struct {
 	Type     IconType      `json:"type"`
-	Emoji    *Emoji        `json:"emoji,omitempty"`
+	Emoji    string        `json:"emoji,omitempty"`
 	External *ExternalFile `json:"external,omitempty"`
 	File     *NotionFile   `json:"file,omitempty"`
 }
@@ -102,7 +102,7 @@ func (id IconDescriptor) ValidateRequest() error {
 	if id.Type == FileIconType {
 		buff.WriteString(fmt.Sprintf("IconDescriptor.Type in request supports only %v and %v, but not %v\n", IconTypeToString[EmojiIconType], IconTypeToString[ExternalIconType], IconTypeToString[FileIconType]))
 	}
-	if id.Type == EmojiIconType && id.Emoji == nil {
+	if id.Type == EmojiIconType && id.Emoji == "" {
 		buff.WriteString(fmt.Sprintf("IconDescriptor.Emoji shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[EmojiIconType]))
 	}
 	if id.Type == ExternalIconType && id.External == nil {
@@ -146,7 +146,7 @@ func (p *IconType) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -217,7 +217,7 @@ type DBRollupProperty struct {
 	Function             string `json:"function"`
 }
 
-type DatabaseQuery struct {
+type QuertyDBRq struct {
 	Filter      *Filter `json:"filter,omitempty"`
 	Sorts       []Sort  `json:"sorts,omitempty"`
 	StartCursor string  `json:"start_cursor,omitempty"`
@@ -378,15 +378,15 @@ type FormulaCondition struct {
 	Date     *DateCondition     `json:"date,omitempty"`
 }
 
-type CreateDB struct {
-	PageId     string          `json:"parent"`
-	Title      []RichText      `json:"title,omitempty"`
-	Properties DBProperties    `json:"properties"`
-	Icon       *IconDescriptor `json:"icon,omitempty"`
-	Cover      *FileDescriptor `json:"cover,omitempty"`
+type CreateDBRq struct {
+	PageId     string
+	Title      []RichText
+	Properties DBProperties
+	Icon       *IconDescriptor
+	Cover      *FileDescriptor
 }
 
-func (cdb CreateDB) ValidateRequest() error {
+func (cdb CreateDBRq) ValidateRequest() error {
 	var buff = strings.Builder{}
 
 	if cdb.PageId == "" {
@@ -418,7 +418,7 @@ func (cdb CreateDB) ValidateRequest() error {
 	return errors.New(buff.String())
 }
 
-func (cdb *CreateDB) MarshalJSON() ([]byte, error) {
+func (cdb *CreateDBRq) MarshalJSON() ([]byte, error) {
 	err := cdb.ValidateRequest()
 
 	if err != nil {
@@ -445,9 +445,11 @@ func (cdb *CreateDB) MarshalJSON() ([]byte, error) {
 	return json.Marshal(dto)
 }
 
-type UpdateDB struct {
-	Title      []RichText   `json:"title,omitempty"`
-	Properties DBProperties `json:"properties,omitempty"`
+type UpdateDBRq struct {
+	Title      []RichText      `json:"title,omitempty"`
+	Properties DBProperties    `json:"properties,omitempty"`
+	Icon       *IconDescriptor `json:"icon,omitempty"`
+	Cover      *FileDescriptor `json:"cover,omitempty"`
 }
 
 type NumberConfigFormat int
@@ -586,7 +588,7 @@ func (p *NumberConfigFormat) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -676,7 +678,7 @@ func (p *DBPropType) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -738,7 +740,7 @@ func (p *Color) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -813,7 +815,7 @@ func (p *RollupFunction) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 
@@ -852,7 +854,7 @@ func (p *TimestampFilterType) UnmarshalJSON(b []byte) error {
 	if !ok {
 		return fmt.Errorf("%v isn't enum value", res)
 	}
-	p = &res
+	*p = res
 	return nil
 }
 

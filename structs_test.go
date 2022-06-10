@@ -357,7 +357,7 @@ func TestUnmarshalDatabasePage(t *testing.T) {
 	utils.AssertEqualsString(t, "TmLV", *v.ID)
 	utils.AssertEqualsString(t, "rich_text", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.RichText))
-	utils.AssertEqualsString(t, "text", v.RichText[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.RichText[0].Type))
 	utils.AssertEqualsString(t, "hello", v.RichText[0].Text.Content)
 	//utils.AssertNil(t, v.RichText[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.RichText[0].Annotations.Bold)
@@ -395,7 +395,7 @@ func TestUnmarshalDatabasePage(t *testing.T) {
 	utils.AssertEqualsString(t, "cjRY", *v.ID)
 	utils.AssertEqualsString(t, "rich_text", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.RichText))
-	utils.AssertEqualsString(t, "text", v.RichText[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.RichText[0].Type))
 	utils.AssertEqualsString(t, "Hello there", v.RichText[0].Text.Content)
 	//utils.AssertNil(t, v.RichText[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.RichText[0].Annotations.Bold)
@@ -443,7 +443,7 @@ func TestUnmarshalDatabasePage(t *testing.T) {
 	utils.AssertEqualsString(t, "title", *v.ID)
 	utils.AssertEqualsString(t, "title", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.Title))
-	utils.AssertEqualsString(t, "text", v.Title[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.Title[0].Type))
 	utils.AssertEqualsString(t, "Hello", v.Title[0].Text.Content)
 	//utils.AssertNil(t, v.Title[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.Title[0].Annotations.Bold)
@@ -602,7 +602,7 @@ func TestSortMarshal(t *testing.T) {
 }
 
 func TestDatabaseQuery(t *testing.T) {
-	query := gotion.DatabaseQuery{
+	query := gotion.QuertyDBRq{
 		Filter: &gotion.Filter{
 			Property: *utils.StrPtr("Landmark"),
 			RichText: &gotion.TextCondition{
@@ -966,7 +966,7 @@ func TestUnmarshalPage(t *testing.T) {
 	utils.AssertEqualsString(t, "TmLV", *v.ID)
 	utils.AssertEqualsString(t, "rich_text", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.RichText))
-	utils.AssertEqualsString(t, "text", v.RichText[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.RichText[0].Type))
 	utils.AssertEqualsString(t, "hello", v.RichText[0].Text.Content)
 	//utils.AssertNil(t, v.RichText[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.RichText[0].Annotations.Bold)
@@ -1004,7 +1004,7 @@ func TestUnmarshalPage(t *testing.T) {
 	utils.AssertEqualsString(t, "cjRY", *v.ID)
 	utils.AssertEqualsString(t, "rich_text", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.RichText))
-	utils.AssertEqualsString(t, "text", v.RichText[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.RichText[0].Type))
 	utils.AssertEqualsString(t, "Hello there", v.RichText[0].Text.Content)
 	//utils.AssertNil(t, v.RichText[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.RichText[0].Annotations.Bold)
@@ -1052,7 +1052,7 @@ func TestUnmarshalPage(t *testing.T) {
 	utils.AssertEqualsString(t, "title", *v.ID)
 	utils.AssertEqualsString(t, "title", *v.Type)
 	utils.AssertEqualsInt(t, 1, len(v.Title))
-	utils.AssertEqualsString(t, "text", v.Title[0].Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(v.Title[0].Type))
 	utils.AssertEqualsString(t, "Hello", v.Title[0].Text.Content)
 	//utils.AssertNil(t, v.Title[0].Text.Link)
 	utils.AssertEqualsBool(t, false, v.Title[0].Annotations.Bold)
@@ -1415,7 +1415,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	utils.AssertEqualsInt(t, 15, len(richText))
 
 	rt := richText[0]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "Hello", rt.Text.Content)
 	// //utils.AssertNil(t, rt.Text.Link)
@@ -1430,7 +1430,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	// //utils.AssertNil(t, rt.Href)
 
 	rt = richText[1]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " it’s ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1445,7 +1445,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[2]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "formatted", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1460,7 +1460,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[3]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1475,7 +1475,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[4]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "rich", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1490,7 +1490,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[5]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1505,7 +1505,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[6]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "text", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1520,7 +1520,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[7]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1535,7 +1535,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[8]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "block I", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1550,7 +1550,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[9]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "t has", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1565,7 +1565,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[10]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1580,7 +1580,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[11]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "many ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1595,7 +1595,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[12]
-	utils.AssertEqualsString(t, "equation", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.EquationRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Equation)
 	utils.AssertEqualsString(t, "different", rt.Equation.Expression)
 	//utils.AssertNotNill(t, rt.Annotations)
@@ -1609,7 +1609,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[13]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, " formattings and of course it has a link ", rt.Text.Content)
 	//utils.AssertNil(t, rt.Text.Link)
@@ -1624,7 +1624,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	//utils.AssertNil(t, rt.Href)
 
 	rt = richText[14]
-	utils.AssertEqualsString(t, "text", rt.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, rt.Text)
 	utils.AssertEqualsString(t, "https://stackoverflow.com/questions/53731271/how-to-trigger-parameter-hints-in-visual-studio-code", rt.Text.Content)
 	//utils.AssertNotNill(t, rt.Text.Link)
@@ -1647,7 +1647,7 @@ func TestUnmarshalRichTextBlock(t *testing.T) {
 	title := key.Title
 	utils.AssertEqualsInt(t, 1, len(title))
 	t1 := title[0]
-	utils.AssertEqualsString(t, "text", t1.Type)
+	utils.AssertEqualsInt(t, int(gotion.TextRichTextType), int(rt.Type))
 	//utils.AssertNotNill(t, t1.Text)
 	utils.AssertEqualsString(t, "simple key", t1.Text.Content)
 	//utils.AssertNil(t, t1.Text.Link)
