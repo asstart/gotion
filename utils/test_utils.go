@@ -144,3 +144,24 @@ func AssertEqualsTime(t *testing.T, expected time.Time, actual time.Time) {
 		Actual:  %v
 		`, success, expected, actual)
 }
+
+func AssertEqualsStruct(t *testing.T, expected interface{}, actual interface{}) {
+	if reflect.ValueOf(expected).Kind() != reflect.Struct {
+		t.Fatalf("expected should be a struct, but: %T", expected)
+	}
+	if reflect.ValueOf(actual).Kind() != reflect.Struct {
+		t.Fatalf("actual should be a struct, but: %T", actual)
+	}
+
+	ok := reflect.DeepEqual(expected, actual)
+	if !ok {
+		t.Fatalf(`%s
+			Expected:%+v
+			Actual:  %+v
+			`, failed, expected, actual)
+	}
+	t.Logf(`%s
+	Expected:%+v
+	Actual:  %+v
+	`, success, expected, actual)
+}

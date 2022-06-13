@@ -1,0 +1,173 @@
+###
+
+#TestMarshallUpdateDB - empty request doesn't change anything
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#TestMarshallUpdateDB - empty request doesn't change anything
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "properties":{}
+}
+
+###
+
+#TestMarshallUpdateDB - update title
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "title": [{
+        "type":"text",
+        "text": {
+            "content": "Hello world with updated title"
+        }
+    }]
+}
+
+###
+
+#TestMarshallUpdateDB - add icon
+#not documented in the official notion api reference
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    
+    "icon": {
+        "type": "emoji",
+        "emoji": "🎎"
+    }
+}
+
+
+
+###
+
+#TestMarshallUpdateDB - add cover
+#not documented in the official notion api reference
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    
+    "cover": {
+        "type": "external",
+        "external": {
+            "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+        }
+    }
+}
+
+###
+
+#TestMarshallUpdateDB - update properties 
+
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    
+    "properties": {
+        "Barenumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Checkbox": {
+            "checkbox": {}
+        },
+        "Createdat": {
+            "created_time": {}
+        },
+        "Createdby": {
+            "created_by": {}
+        },
+        "Date": {
+            "date": {}
+        },
+        "Email": {
+            "email": {}
+        },
+        "Files": {
+            "files": {}
+        },
+        "Formattednumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Formula": {
+            "formula": {
+                "expression": "1"
+            }
+        },
+        "Multiselect": {
+            "multi_select": {
+                "options": [{
+                    "name": "tag1_multi",
+                    "color": "blue"
+                }, {
+                    "name": "tag2_multi",
+                    "color": "orange"
+                }]
+            }
+        },
+        "Name": {
+            "title": {}
+        },
+        "People": {
+            "date": {}
+        },
+        "Phone": {
+            "phone_number": {}
+        },
+        "Richtext": {
+            "rich_text": {}
+        },
+        "Select": {
+            "select": {
+                "options": [{
+                    "name": "tag1",
+                    "color": "blue"
+                }, {
+                    "name": "tag2",
+                    "color": "orange"
+                }]
+            }
+        },
+        "URL": {
+            "url": {}
+        },
+        "Updatedat": {
+            "last_edited_time": {}
+        },
+        "Updatedby": {
+            "last_edited_by": {}
+        }
+    }
+}
+
+
+

@@ -1,0 +1,354 @@
+###
+
+#TestMarshallCreateDB - empty with title
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{"parent":{"type":"page_id","page_id":"b0b48eac42514c2da3ab126a9986cf72"},"title":[{"text":{"content":"Hello world"}}],"properties":{"Name":{"title":{}}}}
+
+###
+
+#TestMarshallCreateDB - empty without title
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{"parent":{"type":"page_id","page_id":"b0b48eac42514c2da3ab126a9986cf72"},"properties":{"Name":{"title":{}}}}
+
+###
+
+#TestMarshallCreateDB - empty with emoji as icon
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "type": "page_id",
+        "page_id": "b0b48eac42514c2da3ab126a9986cf72"
+    },
+    "icon": {
+        "type": "emoji",
+        "emoji": "🎎"
+    },
+    "title": [{
+        "text": {
+            "content": "Hello world"
+        }
+    }],
+    "properties": {
+        "Name": {
+            "title": {}
+        }
+    }
+}
+
+###
+
+#TestMarshallCreateDB - empty with notion file as icon. This doesn't work
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "type": "page_id",
+        "page_id": "b0b48eac42514c2da3ab126a9986cf72"
+    },
+    "icon": {
+        "type": "file",
+        "file": {
+            "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/113625f0-625b-4b32-8ef5-7813bccadbf4/%D0%A7%D0%B5%D0%BA-2022-01-10-115729_%282%29.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220607%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220607T223919Z&X-Amz-Expires=3600&X-Amz-Signature=b6a5b0725185dc0b515a90c7c99aa4a4b091193930db88beca0d5f385866da20&X-Amz-SignedHeaders=host&x-id=GetObject"
+        }
+    },
+    "title": [{
+        "text": {
+            "content": "Hello world with notion file as icon"
+        }
+    }],
+    "properties": {
+        "Name": {
+            "title": {}
+        }
+    }
+}
+
+###
+
+#TestMarshallCreateDB - empty with external file as icon
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "type": "page_id",
+        "page_id": "b0b48eac42514c2da3ab126a9986cf72"
+    },
+    "icon": {
+        "type": "external",
+        "external": {
+            "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+        }
+    },
+    "title": [{
+        "text": {
+            "content": "Hello world with external file as icon"
+        }
+    }],
+    "properties": {
+        "Name": {
+            "title": {}
+        }
+    }
+}
+
+###
+
+#TestMarshallCreateDB - fullfilled
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "type": "page_id",
+        "page_id": "b0b48eac42514c2da3ab126a9986cf72"
+    },
+    "title": [{
+        "annotations": {
+            "bold": true,
+            "italic": true,
+            "strikethrough": true,
+            "underline": true,
+            "code": true,
+            "color": "red"
+        },
+        "text": {
+            "content": "Hello"
+        }
+    }, {
+        "mention": {
+            "user": {
+                "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+            }
+        }
+    }, {
+        "equation": {
+            "expression": "w+orld"
+        }
+    }],
+    "properties": {
+        "Barenumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Checkbox": {
+            "checkbox": {}
+        },
+        "Createdat": {
+            "created_time": {}
+        },
+        "Createdby": {
+            "created_by": {}
+        },
+        "Date": {
+            "date": {}
+        },
+        "Email": {
+            "email": {}
+        },
+        "Files": {
+            "files": {}
+        },
+        "Formattednumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Formula": {
+            "formula": {
+                "expression": "1"
+            }
+        },
+        "Multiselect": {
+            "multi_select": {
+                "options": [{
+                    "name": "tag1_multi",
+                    "color": "blue"
+                }, {
+                    "name": "tag2_multi",
+                    "color": "orange"
+                }]
+            }
+        },
+        "Name": {
+            "title": {}
+        },
+        "People": {
+            "date": {}
+        },
+        "Phone": {
+            "phone_number": {}
+        },
+        "Richtext": {
+            "rich_text": {}
+        },
+        "Select": {
+            "select": {
+                "options": [{
+                    "name": "tag1",
+                    "color": "blue"
+                }, {
+                    "name": "tag2",
+                    "color": "orange"
+                }]
+            }
+        },
+        "URL": {
+            "url": {}
+        },
+        "Updatedat": {
+            "last_edited_time": {}
+        },
+        "Updatedby": {
+            "last_edited_by": {}
+        }
+    }
+}
+
+###
+
+#TestMarshallCreateDB - fullfilled in workspace. Doesn't work now. Only possible to create db under another page
+
+POST https://{{notion-host}}/v1/databases/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "type": "workspace",
+        "workspace": true
+    },
+    "title": [{
+        "annotations": {
+            "bold": true,
+            "italic": true,
+            "strikethrough": true,
+            "underline": true,
+            "code": true,
+            "color": "red"
+        },
+        "text": {
+            "content": "Hello"
+        }
+    }, {
+        "mention": {
+            "user": {
+                "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+            }
+        }
+    }, {
+        "equation": {
+            "expression": "w+orld"
+        }
+    }],
+    "properties": {
+        "Barenumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Checkbox": {
+            "checkbox": {}
+        },
+        "Createdat": {
+            "created_time": {}
+        },
+        "Createdby": {
+            "created_by": {}
+        },
+        "Date": {
+            "date": {}
+        },
+        "Email": {
+            "email": {}
+        },
+        "Files": {
+            "files": {}
+        },
+        "Formattednumber": {
+            "number": {
+                "format": "number"
+            }
+        },
+        "Formula": {
+            "formula": {
+                "expression": "1"
+            }
+        },
+        "Multiselect": {
+            "multi_select": {
+                "options": [{
+                    "name": "tag1_multi",
+                    "color": "blue"
+                }, {
+                    "name": "tag2_multi",
+                    "color": "orange"
+                }]
+            }
+        },
+        "Name": {
+            "title": {}
+        },
+        "People": {
+            "date": {}
+        },
+        "Phone": {
+            "phone_number": {}
+        },
+        "Richtext": {
+            "rich_text": {}
+        },
+        "Select": {
+            "select": {
+                "options": [{
+                    "name": "tag1",
+                    "color": "blue"
+                }, {
+                    "name": "tag2",
+                    "color": "orange"
+                }]
+            }
+        },
+        "URL": {
+            "url": {}
+        },
+        "Updatedat": {
+            "last_edited_time": {}
+        },
+        "Updatedby": {
+            "last_edited_by": {}
+        }
+    }
+}

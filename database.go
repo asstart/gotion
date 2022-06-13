@@ -6,21 +6,20 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 )
 
 type Database struct {
 	Object         string          `json:"object"`
-	Id             string          `json:"id"`
-	CreatedTime    time.Time       `json:"created_time"`
+	ID             string          `json:"id"`
+	CreatedTime    DateTimeWrap    `json:"created_time"`
 	CreatedBy      User            `json:"created_by"`
-	LastEditedTime time.Time       `json:"last_edited_time"`
+	LastEditedTime DateTimeWrap    `json:"last_edited_time"`
 	LastEditedBy   User            `json:"last_edited_by"`
 	Title          []RichText      `json:"title"`
 	Icon           *IconDescriptor `json:"icon,omitempty"`
 	Cover          *FileDescriptor `json:"cover,omitempty"`
 	Properties     DBProperties    `json:"properties"`
-	ParentType     DBParent        `json:"parent"`
+	Parent         DBParent        `json:"parent"`
 	URL            string          `json:"url"`
 	Archived       bool            `json:"archived"`
 }
@@ -78,9 +77,9 @@ func (p *DBParentType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *DBParentType) MarshalJSON() ([]byte, error) {
+func (p DBParentType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(DBParentTypeToString[*p])
+	b.WriteString(DBParentTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -150,9 +149,9 @@ func (p *IconType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *IconType) MarshalJSON() ([]byte, error) {
+func (p IconType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(IconTypeToString[*p])
+	b.WriteString(IconTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -160,33 +159,35 @@ func (p *IconType) MarshalJSON() ([]byte, error) {
 type DBProperties map[string]DBProperty
 
 type DBProperty struct {
-	Id   string     `json:"id,omitempty"`
-	Type DBPropType `json:"type,omitempty"`
-	Name string     `json:"name,omitempty"`
+	ID   string         `json:"id,omitempty"`
+	Type DBPropertyType `json:"type,omitempty"`
+	Name string         `json:"name,omitempty"`
 
-	Title          interface{}         `json:"title,omitempty"`
-	RichText       interface{}         `json:"rich_text,omitempty"`
+	Title          *DBDefaultProperty  `json:"title,omitempty"`
+	RichText       *DBDefaultProperty  `json:"rich_text,omitempty"`
 	Number         *DBNumberProperty   `json:"number,omitempty"`
 	Select         *DBSelectProperties `json:"select,omitempty"`
 	MultiSelect    *DBSelectProperties `json:"multi_select,omitempty"`
-	Date           interface{}         `json:"date,omitempty"`
-	People         interface{}         `json:"people,omitempty"`
-	Files          interface{}         `json:"files,omitempty"`
-	Checkbox       interface{}         `json:"checkbox,omitempty"`
-	URL            interface{}         `json:"url,omitempty"`
-	Email          interface{}         `json:"email,omitempty"`
-	PhoneNumber    interface{}         `json:"phone_number,omitempty"`
+	Date           *DBDefaultProperty  `json:"date,omitempty"`
+	People         *DBDefaultProperty  `json:"people,omitempty"`
+	Files          *DBDefaultProperty  `json:"files,omitempty"`
+	Checkbox       *DBDefaultProperty  `json:"checkbox,omitempty"`
+	URL            *DBDefaultProperty  `json:"url,omitempty"`
+	Email          *DBDefaultProperty  `json:"email,omitempty"`
+	PhoneNumber    *DBDefaultProperty  `json:"phone_number,omitempty"`
 	Formula        *DBFormulatProperty `json:"formula,omitempty"`
 	Relation       *DBRelationProperty `json:"relation,omitempty"`
-	Rollup         *Rollup             `json:"rollup,omitempty"`
-	CreatedTime    interface{}         `json:"created_time,omitempty"`
-	CreatedBy      interface{}         `json:"created_by,omitempty"`
-	LastEditedTime interface{}         `json:"last_edited_time,omitempty"`
-	LastEditedBy   interface{}         `json:"last_edited_by,omitempty"`
+	Rollup         *RollupProperty     `json:"rollup,omitempty"`
+	CreatedTime    *DBDefaultProperty  `json:"created_time,omitempty"`
+	CreatedBy      *DBDefaultProperty  `json:"created_by,omitempty"`
+	LastEditedTime *DBDefaultProperty  `json:"last_edited_time,omitempty"`
+	LastEditedBy   *DBDefaultProperty  `json:"last_edited_by,omitempty"`
 }
 
+type DBDefaultProperty struct{}
+
 type DBNumberProperty struct {
-	Format NumberConfigFormat `json:"format"`
+	Format NumberPropertyFormat `json:"format"`
 }
 
 type DBSelectProperties struct {
@@ -194,9 +195,9 @@ type DBSelectProperties struct {
 }
 
 type DBSelectProperty struct {
-	Name  string `json:"name"`
-	Id    string `json:"id,omitempty"`
-	Color Color  `json:"color"`
+	Name  string        `json:"name"`
+	Id    string        `json:"id,omitempty"`
+	Color PropertyColor `json:"color"`
 }
 
 type DBFormulatProperty struct {
@@ -225,15 +226,86 @@ type QuertyDBRq struct {
 }
 
 type Sort struct {
-	Property  string     `json:"property,omitempty"`
-	Timestamp *time.Time `json:"timestamp,omitempty"`
-	Direction string     `json:"direction"`
+	Property string `json:"property,omitempty"`
+	/*
+		If you will pass both timestamp and property in one sort object
+		like this:
+
+		{
+			"sorts": [
+				{
+					"timestamp": "created_time",
+					"property": "title",
+					"direction": "ascending"
+				}
+			]
+		}
+
+		Notiion will accept it, but behaviour unpredictable(need to test)
+		TODO Think about validtion on exactly one of this
+	*/
+	Timestamp TimestampFilterType `json:"timestamp,omitempty"`
+	Direction SortDirection       `json:"direction"`
+}
+
+type SortDirection int
+
+const (
+	Ascending SortDirection = iota
+	Descending
+)
+
+var SortDirectionToString = map[SortDirection]string{
+	Ascending:  "ascending",
+	Descending: "descending",
+}
+
+var StringToSortDirection = map[string]SortDirection{
+	"ascending":  Ascending,
+	"descending": Descending,
+}
+
+func (p *SortDirection) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToSortDirection[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	*p = res
+	return nil
+}
+
+func (p SortDirection) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(SortDirectionToString[p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }
 
 //Add filter terst with timestamp
 type Filter struct {
 	Property  string              `json:"property,omitempty"`
 	Timestamp TimestampFilterType `json:"timestamp,omitempty"`
+
+	/*
+		If you will pass several conditions for one propery,
+		For example:
+		{
+			"filter": {
+				"property": "dateprop",
+				"date": {
+					"before": "2033-05-18T03:33:00.1Z",
+					"is_not_empty": false
+				}
+			}
+		}
+
+		Notion will handle this as valid request, but only one condition will be applied
+	*/
 
 	RichText     *TextCondition        `json:"rich_text,omitempty"`
 	Title        *TextCondition        `json:"title,omitempty"`
@@ -305,23 +377,23 @@ type MultiSelectCondition struct {
 
 type DateCondition struct {
 	//should be a valid ISO 8601 date string
-	Equals *time.Time `json:"equals,omitempty"`
+	Equals *DateTimeWrap `json:"equals,omitempty"`
 	//should be a valid ISO 8601 date string
-	Before *time.Time `json:"before,omitempty"`
+	Before *DateTimeWrap `json:"before,omitempty"`
 	//should be a valid ISO 8601 date string
-	After *time.Time `json:"after,omitempty"`
+	After *DateTimeWrap `json:"after,omitempty"`
 	//should be a valid ISO 8601 date string
-	OnOrBefore *time.Time `json:"on_or_before,omitempty"`
+	OnOrBefore *DateTimeWrap `json:"on_or_before,omitempty"`
 	//should be a valid ISO 8601 date string
-	OnOrAfter  *time.Time  `json:"on_or_after,omitempty"`
-	PastWeek   interface{} `json:"past_week,omitempty"` //This values should be part of json despite it empty. Test it
-	PastMonth  interface{} `json:"past_month,omitempty"`
-	PastYear   interface{} `json:"past_year,omitempty"`
-	NextWeek   interface{} `json:"next_week,omitempty"`
-	NextMonth  interface{} `json:"next_month,omitempty"`
-	NextYear   interface{} `json:"next_year,omitempty"`
-	IsEmpty    bool        `json:"is_empty,omitempty"`
-	IsNotEmpty bool        `json:"is_not_empty,omitempty"`
+	OnOrAfter  *DateTimeWrap      `json:"on_or_after,omitempty"`
+	PastWeek   *DateTimeEmptyWrap `json:"past_week,omitempty"`
+	PastMonth  *DateTimeEmptyWrap `json:"past_month,omitempty"`
+	PastYear   *DateTimeEmptyWrap `json:"past_year,omitempty"`
+	NextWeek   *DateTimeEmptyWrap `json:"next_week,omitempty"`
+	NextMonth  *DateTimeEmptyWrap `json:"next_month,omitempty"`
+	NextYear   *DateTimeEmptyWrap `json:"next_year,omitempty"`
+	IsEmpty    bool               `json:"is_empty,omitempty"`
+	IsNotEmpty bool               `json:"is_not_empty,omitempty"`
 }
 
 type PeopleCondition struct {
@@ -418,7 +490,7 @@ func (cdb CreateDBRq) ValidateRequest() error {
 	return errors.New(buff.String())
 }
 
-func (cdb *CreateDBRq) MarshalJSON() ([]byte, error) {
+func (cdb CreateDBRq) MarshalJSON() ([]byte, error) {
 	err := cdb.ValidateRequest()
 
 	if err != nil {
@@ -452,10 +524,10 @@ type UpdateDBRq struct {
 	Cover      *FileDescriptor `json:"cover,omitempty"`
 }
 
-type NumberConfigFormat int
+type NumberPropertyFormat int
 
 const (
-	NoNumberFormat NumberConfigFormat = iota
+	NoNumberFormat NumberPropertyFormat = iota
 	Number
 	NumberWithCommas
 	Percent
@@ -496,7 +568,7 @@ const (
 	UruguayanPeso
 )
 
-var NumberFormatToString = map[NumberConfigFormat]string{
+var NumberFormatToString = map[NumberPropertyFormat]string{
 	Number:           "number",
 	NumberWithCommas: "number_with_commas",
 	Percent:          "percent",
@@ -537,7 +609,7 @@ var NumberFormatToString = map[NumberConfigFormat]string{
 	UruguayanPeso:    "uruguayan_peso",
 }
 
-var StringToNumberFormat = map[string]NumberConfigFormat{
+var StringToNumberFormat = map[string]NumberPropertyFormat{
 	"number":             Number,
 	"number_with_commas": NumberWithCommas,
 	"percent":            Percent,
@@ -578,7 +650,7 @@ var StringToNumberFormat = map[string]NumberConfigFormat{
 	"uruguayan_peso":     UruguayanPeso,
 }
 
-func (p *NumberConfigFormat) UnmarshalJSON(b []byte) error {
+func (p *NumberPropertyFormat) UnmarshalJSON(b []byte) error {
 	var v string
 	err := json.Unmarshal(b, &v)
 	if err != nil {
@@ -592,17 +664,17 @@ func (p *NumberConfigFormat) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *NumberConfigFormat) MarshalJSON() ([]byte, error) {
+func (p NumberPropertyFormat) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(NumberFormatToString[*p])
+	b.WriteString(NumberFormatToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
 
-type DBPropType int
+type DBPropertyType int
 
 const (
-	NoDBPropType DBPropType = iota
+	NoDBPropType DBPropertyType = iota
 	PropTypeTitle
 	PropTypeRichText
 	PropTypeNumber
@@ -624,7 +696,7 @@ const (
 	PropTypeLastEditedBy
 )
 
-var PropTypeToString = map[DBPropType]string{
+var PropTypeToString = map[DBPropertyType]string{
 	PropTypeTitle:          "title",
 	PropTypeRichText:       "rich_text",
 	PropTypeNumber:         "number",
@@ -646,7 +718,7 @@ var PropTypeToString = map[DBPropType]string{
 	PropTypeLastEditedBy:   "last_edited_by",
 }
 
-var StringToPropType = map[string]DBPropType{
+var StringToPropType = map[string]DBPropertyType{
 	"title":            PropTypeTitle,
 	"rich_text":        PropTypeRichText,
 	"number":           PropTypeNumber,
@@ -668,7 +740,7 @@ var StringToPropType = map[string]DBPropType{
 	"last_edited_by":   PropTypeLastEditedBy,
 }
 
-func (p *DBPropType) UnmarshalJSON(b []byte) error {
+func (p *DBPropertyType) UnmarshalJSON(b []byte) error {
 	var v string
 	err := json.Unmarshal(b, &v)
 	if err != nil {
@@ -682,17 +754,17 @@ func (p *DBPropType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *DBPropType) MarshalJSON() ([]byte, error) {
+func (p DBPropertyType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(PropTypeToString[*p])
+	b.WriteString(PropTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
 
-type Color int
+type PropertyColor int
 
 const (
-	Default Color = iota
+	DefaultColor PropertyColor = iota
 	Gray
 	Brown
 	Orange
@@ -704,21 +776,21 @@ const (
 	Red
 )
 
-var ColorToString = map[Color]string{
-	Default: "default",
-	Gray:    "gray",
-	Brown:   "brown",
-	Orange:  "orange",
-	Yellow:  "yellow",
-	Green:   "green",
-	Blue:    "blue",
-	Purple:  "purple",
-	Pink:    "pink",
-	Red:     "red",
+var ColorToString = map[PropertyColor]string{
+	DefaultColor: "default",
+	Gray:         "gray",
+	Brown:        "brown",
+	Orange:       "orange",
+	Yellow:       "yellow",
+	Green:        "green",
+	Blue:         "blue",
+	Purple:       "purple",
+	Pink:         "pink",
+	Red:          "red",
 }
 
-var StringToColor = map[string]Color{
-	"default": Default,
+var StringToColor = map[string]PropertyColor{
+	"default": DefaultColor,
 	"gray":    Gray,
 	"brown":   Brown,
 	"orange":  Orange,
@@ -730,7 +802,7 @@ var StringToColor = map[string]Color{
 	"red":     Red,
 }
 
-func (p *Color) UnmarshalJSON(b []byte) error {
+func (p *PropertyColor) UnmarshalJSON(b []byte) error {
 	var v string
 	err := json.Unmarshal(b, &v)
 	if err != nil {
@@ -744,9 +816,9 @@ func (p *Color) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *Color) MarshalJSON() ([]byte, error) {
+func (p PropertyColor) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(ColorToString[*p])
+	b.WriteString(ColorToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -819,9 +891,9 @@ func (p *RollupFunction) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *RollupFunction) MarshalJSON() ([]byte, error) {
+func (p RollupFunction) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(RollupFunctionToString[*p])
+	b.WriteString(RollupFunctionToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -858,9 +930,9 @@ func (p *TimestampFilterType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *TimestampFilterType) MarshalJSON() ([]byte, error) {
+func (p TimestampFilterType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(TimestampFilterTypeToString[*p])
+	b.WriteString(TimestampFilterTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }

@@ -1,0 +1,1377 @@
+PATCH https://{{notion-host}}/v1/databases/ba96e9ad460047a7a8685f3328618910 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get all database objects with empty filter
+#Should fail
+
+POST https://{{notion-host}}/v1/databases/44355a0cb3a3412c99e464eee7b3b166/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "filter":{}
+}
+
+###
+
+#Get database properties by richtext single level filter
+
+POST https://{{notion-host}}/v1/databases/44355a0cb3a3412c99e464eee7b3b166/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "filter":{
+        "property":"Name",
+        "title":{
+            "equals":"Row1"
+        }
+    }
+}
+
+###
+
+#TestMarshal2NestedLevelFilter
+
+POST https://{{notion-host}}/v1/databases/49cb7c25bac2414dae98325d9fc050a9/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "filter":{
+        "and":[
+            {
+                "property":"level1_1",
+                "number":{
+                    "equals":10
+                }
+            },
+            {
+                "property":"level1_2",
+                "rich_text":{
+                    "contains":"level1"
+                }
+            },
+            {
+                "or":[
+                    {
+                        "property":"level2_1",
+                        "number":{
+                            "greater_than":15
+                        }
+                    },
+                    {
+                        "property":"level2_2",
+                        "number":{
+                            "less_than":30
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+
+###
+
+#More than 2 level of depth should be failed
+
+POST https://{{notion-host}}/v1/databases/49cb7c25bac2414dae98325d9fc050a9/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+		"filter":{
+			"and":[
+				{
+					"property":"level1_1",
+					"number":{
+						"equals":10
+					}
+				},
+				{
+					"property":"level1_2",
+					"rich_text":{
+						"contains":"level1"
+					}
+				},
+				{
+					"or":[
+						{
+							"property":"level2_1",
+							"number":{
+								"greater_than":15
+							}
+						},
+						{
+							"property":"level2_2",
+							"number":{
+								"less_than":30
+							}
+						},
+                        {
+                            "and":[
+                                {
+                                    "property":"level2_1",
+                                    "number":{
+                                        "equals":15
+                                    }
+                                },
+                                {
+                                    "property":"level2_2",
+                                    "number":{
+                                        "equals":15
+                                    }
+                                }
+                            ]
+                        }
+					]
+				}
+			]
+		}
+	}
+
+
+###
+
+#TestMarshalRichTextQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"equals":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"does_not_equal":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"contains":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"does_not_contain":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - starts_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"starts_with":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - ends_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"ends_with":"some_string"}}}
+
+###
+
+#TestMarshalRichTextQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"is_empty": true}}}
+
+###
+
+#TestMarshalRichTextQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"is_not_empty":true}}}
+
+###
+
+#TestMarshalRichTextQuery - is_empty = false
+#Should fail
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{"is_empty": false}}}
+
+###
+
+#TestMarshalRichTextQuery - contains and does_not_contain simultaneously
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"text","rich_text":{
+    "contains":"some_string",
+    "does_not_contain":"some_string"
+    }
+}}
+
+#############
+
+###
+
+#TestMarshalTitleQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"equals":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"does_not_equal":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"contains":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"does_not_contain":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - starts_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"starts_with":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - ends_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"ends_with":"some_string"}}}
+
+###
+
+#TestMarshalTitleQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"is_empty": true}}}
+
+###
+
+#TestMarshalTitleQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","title":{"is_not_empty":true}}}
+
+#############
+
+###
+
+#TestMarshalURLQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"equals":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"does_not_equal":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"contains":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"does_not_contain":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - starts_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"starts_with":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - ends_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"ends_with":"https://github.com/"}}}
+
+###
+
+#TestMarshalURLQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"is_empty": true}}}
+
+###
+
+#TestMarshalURLQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"url","url":{"is_not_empty":true}}}
+
+#############
+
+###
+
+#TestMarshalEmailQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"equals":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"does_not_equal":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"contains":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"does_not_contain":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - starts_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"starts_with":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - ends_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"ends_with":"test@mail.ru"}}}
+
+###
+
+#TestMarshalEmailQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"is_empty": true}}}
+
+###
+
+#TestMarshalEmailQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"email","email":{"is_not_empty":true}}}
+
+#############
+
+###
+
+#TestMarshalPhoneNumberQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"equals":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"does_not_equal":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"contains":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"does_not_contain":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - starts_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"starts_with":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - ends_with
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"ends_with":"+19876543210"}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"is_empty": true}}}
+
+###
+
+#TestMarshalPhoneNumberQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"phone_number","phone_number":{"is_not_empty":true}}}
+
+#################
+
+###
+
+#TestMarshalNumberQuery - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"equals":5}}}
+
+
+###
+
+#TestMarshalNumberQuery - does_not_equal
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"does_not_equal":5}}}
+
+
+###
+
+#TestMarshalNumberQuery - greater_than
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"greater_than":5}}}
+
+
+###
+
+#TestMarshalNumberQuery - less_than
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"less_than":5}}}
+
+
+###
+
+#TestMarshalNumberQuery - greater_than_or_equal_to
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"greater_than_or_equal_to":5}}}
+
+
+###
+
+#TestMarshalNumberQuery - less_than_or_equal_to
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"less_than_or_equal_to":5}}}
+
+###
+
+#TestMarshalNumberQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"is_empty":true}}}
+
+
+###
+
+#TestMarshalNumberQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"number","number":{"is_not_empty":true}}}
+
+############
+
+###
+
+#TestMarshalCheckboxQuery - equals true
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"checkbox","checkbox":{"equals":true}}}
+
+###
+
+#TestMarshalCheckboxQuery - equals false
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"checkbox","checkbox":{"equals":false}}}
+
+###
+
+#TestMarshalCheckboxQuery - does_not_equal true
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"checkbox","checkbox":{"does_not_equal":true}}}
+
+###
+
+#TestMarshalCheckboxQuery - does_not_equal false
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"checkbox","checkbox":{"does_not_equal":false}}}
+
+################
+
+###
+
+#TestMarshalSelectQuery - equals
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"select","select":{"equals":"tag"}}}
+
+###
+
+#TestMarshalSelectQuery - does_not_equal
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"select","select":{"does_not_equal":"tag"}}}
+
+###
+
+#TestMarshalSelectQuery - is_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"select","select":{"is_empty":true}}}
+
+###
+
+#TestMarshalSelectQuery - is_not_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"select","select":{"is_not_empty":true}}}
+
+################
+
+###
+
+#TestMarshalMultiSelectQuery - contains
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"multi_select","multi_select":{"contains":"tag"}}}
+
+###
+
+#TestMarshalMultiSelectQuery - does_not_contain
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"multi_select","multi_select":{"does_not_contain":"tag"}}}
+
+###
+
+#TestMarshalMultiSelectQuery - is_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"multi_select","multi_select":{"is_empty":true}}}
+
+###
+
+#TestMarshalMultiSelectQuery - is_not_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"multi_select","multi_select":{"is_not_empty":true}}}
+
+############
+
+###
+
+#TestMarshalFileQuery - is_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"file","files":{"is_empty":true}}}
+
+###
+
+#TestMarshalFileQuery - is_not_empty
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"file","files":{"is_not_empty":true}}}
+
+##########
+
+###
+
+#TestMarshalRelationQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"relation","relation":{"contains":"869ec06096fd48a7a7492b15c9502cc9"}}}
+
+###
+
+#TestMarshalRelationQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"relation","relation":{"does_not_contain":"869ec06096fd48a7a7492b15c9502cc9"}}}
+
+###
+
+#TestMarshalRelationQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"relation","relation":{"is_empty":true}}}
+
+###
+
+#TestMarshalRelationQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"relation","relation":{"is_not_empty":true}}}
+
+##########
+
+###
+
+#TestMarshalPeopleQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"people","people":{"contains":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalPeopleQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"people","people":{"does_not_contain":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalPeopleQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"people","people":{"is_empty":true}}}
+
+###
+
+#TestMarshalPeopleQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"people","people":{"is_not_empty":true}}}
+
+##########
+
+###
+
+#TestMarshalCreatedByQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"created_by","created_by":{"contains":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalCreatedByQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"created_by","created_by":{"does_not_contain":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalCreatedByQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"created_by","created_by":{"is_empty":true}}}
+
+###
+
+#TestMarshalCreatedByQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"created_by","created_by":{"is_not_empty":true}}}
+
+##########
+
+###
+
+#TestMarshalLastEditedByQuery - contains
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"last_edited_by","last_edited_by":{"contains":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalLastEditedByQuery - does_not_contain
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"last_edited_by","last_edited_by":{"does_not_contain":"c7f2ae70-6b98-438f-8564-c59a71d7b3a4"}}}
+
+###
+
+#TestMarshalLastEditedByQuery - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"last_edited_by","last_edited_by":{"is_empty":true}}}
+
+###
+
+#TestMarshalLastEditedByQuery - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"last_edited_by","last_edited_by":{"is_not_empty":true}}}
+
+##########
+
+###
+
+#TestMarshalFormulaQuery - string
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"formula","formula":{"string":{"does_not_equal":"some_string"}}}}
+
+###
+
+#TestMarshalFormulaQuery - number
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"formula","formula":{"number":{"equals":10}}}}
+
+###
+
+#TestMarshalFormulaQuery - test request to formula column with wrong type\
+#Expects:
+# {
+#   "object": "error",
+#   "status": 400,
+#   "code": "validation_error",
+#   "message": "The formula has a result type that does not match the property type of the filter provided: formula text does not match filter number"
+# }
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"formula_number","formula":{"number":{"equals":10}}}}
+
+###
+
+#TestMarshalFormulaQuery - checkbox
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"formula_checkbox","formula":{"checkbox":{"equals":true}}}}
+
+###
+
+#TestMarshalFormulaQuery - date
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"formula_date","formula":{"date":{"equals":"2033-05-18T03:33:00Z"}}}}
+
+##########
+
+###
+
+#TestMarshalTRollupQuery - any
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"rollup","rollup":{"any":{"rich_text":{"equals":"some_string"}}}}}
+
+###
+
+#TestMarshallDateCondition - equals
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop","date":{"equals":"2033-05-18T03:33:00.1Z"}}}
+
+###
+
+#TestMarshallDateCondition - before
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"before":"2033-05-18T03:33:00.1Z"}}}
+
+###
+
+#TestMarshallDateCondition - on_or_before
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"on_or_before":"2033-05-18T03:33:00.1Z"}}}
+
+###
+
+#TestMarshallDateCondition - after
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"after":"2033-05-18T03:33:00.1Z"}}}
+
+###
+
+#TestMarshallDateCondition - on_or_after
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"on_or_after":"2033-05-18T03:33:00.1Z"}}}
+
+###
+
+#TestMarshallDateCondition - past_week
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"past_week":{}}}}
+
+###
+
+#TestMarshallDateCondition - past_month
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"past_month":{}}}}
+
+###
+
+#TestMarshallDateCondition - past_year
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"past_year":{}}}}
+
+###
+
+#TestMarshallDateCondition - next_month
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"next_week":{}}}}
+
+###
+
+#TestMarshallDateCondition - next_week
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"next_month":{}}}}
+
+###
+
+#TestMarshallDateCondition - next_year
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"next_year":{}}}}
+
+###
+
+#TestMarshallDateCondition - is_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"is_empty":true}}}
+
+###
+
+#TestMarshallDateCondition - is_not_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"is_not_empty":true}}}
+
+###
+
+#TestMarshallDateCondition - is_mot_empty
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"dateprop", "date":{"is_not_empty":false}}}
+
+###
+
+#TestMarshallDateCondition - if you will pass several properties in filter condition, only one
+#will be applied
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "filter": {
+        "property": "dateprop",
+        "date": {
+            "before": "2033-05-18T03:33:00.1Z",
+            "is_not_empty": false
+        }
+    }
+}
+
+###
+
+#TestQueryWithSort - descending direction
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"property":"title","direction":"descending"}]}
+
+###
+
+#TestQueryWithSort - ascending direction
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"property":"title","direction":"ascending"}]}
+
+###
+
+#TestQueryWithSort - empty direction - not allowed
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"property":"title"}]}
+
+###
+
+#TestQueryWithSort - timestamp ascending direction
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"timestamp":"created_time","direction":"ascending"}]}
+
+###
+
+#TestQueryWithSort - timestamp and property sort type simultaneosly ascending direction
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"timestamp":"created_time","property":"title","direction":"ascending"}]}
+
+###
+
+#TestQueryWithSort - sort array
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"sorts":[{"timestamp":"created_time","direction":"descending"},{"property":"title","direction":"ascending"}]}
+
+###
+
+#TestQueryWithSort - fullfilled
+
+POST https://{{notion-host}}/v1/databases/6cbac946aa7c4d718a3c1b87f2ece05c/query HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{"filter":{"property":"title","rich_text":{"does_not_equal":"Row1"}},"sorts":[{"timestamp":"created_time","direction":"descending"}],"page_size":50}

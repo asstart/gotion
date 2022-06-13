@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 )
 
 type RichText struct {
@@ -53,9 +54,9 @@ func (p *RichTextType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *RichTextType) MarshalJSON() ([]byte, error) {
+func (p RichTextType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(RichTextTypeToString[*p])
+	b.WriteString(RichTextTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -133,9 +134,9 @@ func (p *FileDescriptorType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *FileDescriptorType) MarshalJSON() ([]byte, error) {
+func (p FileDescriptorType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(FileDescriptorTypeToString[*p])
+	b.WriteString(FileDescriptorTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -152,4 +153,24 @@ type NotionFile struct {
 type Emoji struct {
 	Type  string `json:"type"`
 	Emoji string `json:"emoji"`
+}
+
+type DateTimeWrap struct {
+	Datetime time.Time
+}
+
+func (dt DateTimeWrap) MarshalJSON() ([]byte, error) {
+	return dt.Datetime.MarshalJSON()
+}
+
+type DateTimeEmptyWrap struct{}
+
+func (dt *DateTimeWrap) UnmarshalJSON(b []byte) error {
+	var t = time.Time{}
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+	*dt = DateTimeWrap{Datetime: t}
+	return nil
 }

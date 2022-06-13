@@ -71,9 +71,9 @@ func (p *UserType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p *UserType) MarshalJSON() ([]byte, error) {
+func (p UserType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(UserTypeToString[*p])
+	b.WriteString(UserTypeToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }

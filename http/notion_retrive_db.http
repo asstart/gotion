@@ -1,0 +1,5 @@
+###
+#Get empty database request
+GET https://{{notion-host}}/v1/databases/d89595639ad54ed3917608bb23e9f348
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}

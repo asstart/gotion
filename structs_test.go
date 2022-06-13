@@ -586,7 +586,7 @@ func TestMarshalMiltililevelCompoundFilter(t *testing.T) {
 func TestSortMarshal(t *testing.T) {
 	s := gotion.Sort{
 		Property:  *utils.StrPtr("Food group"),
-		Direction: *utils.StrPtr("descending"),
+		Direction: gotion.Descending,
 	}
 
 	expected := `
@@ -613,11 +613,11 @@ func TestDatabaseQuery(t *testing.T) {
 		Sorts: []gotion.Sort{
 			gotion.Sort{
 				Property:  *utils.StrPtr("Food group"),
-				Direction: *utils.StrPtr("descending"),
+				Direction: gotion.Descending,
 			},
 			gotion.Sort{
 				Property:  *utils.StrPtr("Name"),
-				Direction: *utils.StrPtr("ascending"),
+				Direction: gotion.Ascending,
 			},
 		},
 		StartCursor: *utils.StrPtr("3-295-0235"),
