@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -62,12 +63,12 @@ func (p RichTextType) MarshalJSON() ([]byte, error) {
 }
 
 type Annotations struct {
-	Bold          bool   `json:"bold"`
-	Italic        bool   `json:"italic"`
-	Strikethrough bool   `json:"strikethrough"`
-	Underline     bool   `json:"underline"`
-	Code          bool   `json:"code"`
-	Color         string `json:"color"`
+	Bold          bool          `json:"bold"`
+	Italic        bool          `json:"italic"`
+	Strikethrough bool          `json:"strikethrough"`
+	Underline     bool          `json:"underline"`
+	Code          bool          `json:"code"`
+	Color         PropertyColor `json:"color"`
 }
 
 type Text struct {
@@ -173,4 +174,138 @@ func (dt *DateTimeWrap) UnmarshalJSON(b []byte) error {
 	}
 	*dt = DateTimeWrap{Datetime: t}
 	return nil
+}
+
+type PropertyColor int
+
+const (
+	DefaultColor PropertyColor = iota
+	Gray
+	Brown
+	Orange
+	Yellow
+	Green
+	Blue
+	Purple
+	Pink
+	Red
+)
+
+var ColorToString = map[PropertyColor]string{
+	DefaultColor: "default",
+	Gray:         "gray",
+	Brown:        "brown",
+	Orange:       "orange",
+	Yellow:       "yellow",
+	Green:        "green",
+	Blue:         "blue",
+	Purple:       "purple",
+	Pink:         "pink",
+	Red:          "red",
+}
+
+var StringToColor = map[string]PropertyColor{
+	"default": DefaultColor,
+	"gray":    Gray,
+	"brown":   Brown,
+	"orange":  Orange,
+	"yellow":  Yellow,
+	"green":   Green,
+	"blue":    Blue,
+	"purple":  Purple,
+	"pink":    Pink,
+	"red":     Red,
+}
+
+func (p *PropertyColor) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToColor[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	*p = res
+	return nil
+}
+
+func (p PropertyColor) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(ColorToString[p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+type IconDescriptor struct {
+	Type     IconType      `json:"type"`
+	Emoji    string        `json:"emoji,omitempty"`
+	External *ExternalFile `json:"external,omitempty"`
+	File     *NotionFile   `json:"file,omitempty"`
+}
+
+//Notion supports icon as a notion file and this can be returned with response.
+//But in request supports only emoji and external types
+func (id IconDescriptor) ValidateRequest() error {
+	var buff = strings.Builder{}
+	if id.Type == NoIconType {
+		buff.WriteString("IconDescriptor.Type is empty")
+	}
+	if id.Type == FileIconType {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.Type in request supports only %v and %v, but not %v\n", IconTypeToString[EmojiIconType], IconTypeToString[ExternalIconType], IconTypeToString[FileIconType]))
+	}
+	if id.Type == EmojiIconType && id.Emoji == "" {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.Emoji shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[EmojiIconType]))
+	}
+	if id.Type == ExternalIconType && id.External == nil {
+		buff.WriteString(fmt.Sprintf("IconDescriptor.External shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[ExternalIconType]))
+	}
+	var final = buff.String()
+	if final == "" {
+		return nil
+	}
+	return errors.New(buff.String())
+}
+
+type IconType int
+
+const (
+	NoIconType IconType = iota
+	EmojiIconType
+	FileIconType
+	ExternalIconType
+)
+
+var IconTypeToString = map[IconType]string{
+	EmojiIconType:    "emoji",
+	FileIconType:     "file",
+	ExternalIconType: "external",
+}
+
+var StringToIconType = map[string]IconType{
+	"emoji":    EmojiIconType,
+	"file":     FileIconType,
+	"external": ExternalIconType,
+}
+
+func (p *IconType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToIconType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	*p = res
+	return nil
+}
+
+func (p IconType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(IconTypeToString[p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
 }

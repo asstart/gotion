@@ -8,20 +8,22 @@ import (
 	"strings"
 )
 
-type Database struct {
-	Object         string          `json:"object"`
-	ID             string          `json:"id"`
-	CreatedTime    DateTimeWrap    `json:"created_time"`
-	CreatedBy      User            `json:"created_by"`
-	LastEditedTime DateTimeWrap    `json:"last_edited_time"`
-	LastEditedBy   User            `json:"last_edited_by"`
-	Title          []RichText      `json:"title"`
-	Icon           *IconDescriptor `json:"icon,omitempty"`
-	Cover          *FileDescriptor `json:"cover,omitempty"`
-	Properties     DBProperties    `json:"properties"`
-	Parent         DBParent        `json:"parent"`
-	URL            string          `json:"url"`
-	Archived       bool            `json:"archived"`
+type DB struct {
+	Object         string       `json:"object"`
+	ID             string       `json:"id"`
+	CreatedTime    DateTimeWrap `json:"created_time"`
+	CreatedBy      User         `json:"created_by"`
+	LastEditedTime DateTimeWrap `json:"last_edited_time"`
+	LastEditedBy   User         `json:"last_edited_by"`
+	Title          []RichText   `json:"title"`
+	//Doesn't exist in doc, but exists in response
+	Description []RichText      `json:"description"`
+	Icon        *IconDescriptor `json:"icon,omitempty"`
+	Cover       *FileDescriptor `json:"cover,omitempty"`
+	Properties  DBProperties    `json:"properties"`
+	Parent      DBParent        `json:"parent"`
+	URL         string          `json:"url"`
+	Archived    bool            `json:"archived"`
 }
 
 type DBParent struct {
@@ -84,78 +86,6 @@ func (p DBParentType) MarshalJSON() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-type IconDescriptor struct {
-	Type     IconType      `json:"type"`
-	Emoji    string        `json:"emoji,omitempty"`
-	External *ExternalFile `json:"external,omitempty"`
-	File     *NotionFile   `json:"file,omitempty"`
-}
-
-//Notion supports icon as a notion file and this can be returned with response.
-//But in request supports only emoji and external types
-func (id IconDescriptor) ValidateRequest() error {
-	var buff = strings.Builder{}
-	if id.Type == NoIconType {
-		buff.WriteString("IconDescriptor.Type is empty")
-	}
-	if id.Type == FileIconType {
-		buff.WriteString(fmt.Sprintf("IconDescriptor.Type in request supports only %v and %v, but not %v\n", IconTypeToString[EmojiIconType], IconTypeToString[ExternalIconType], IconTypeToString[FileIconType]))
-	}
-	if id.Type == EmojiIconType && id.Emoji == "" {
-		buff.WriteString(fmt.Sprintf("IconDescriptor.Emoji shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[EmojiIconType]))
-	}
-	if id.Type == ExternalIconType && id.External == nil {
-		buff.WriteString(fmt.Sprintf("IconDescriptor.External shouldn't be empty if IconDescriptor.Type=%v\n", IconTypeToString[ExternalIconType]))
-	}
-	var final = buff.String()
-	if final == "" {
-		return nil
-	}
-	return errors.New(buff.String())
-}
-
-type IconType int
-
-const (
-	NoIconType IconType = iota
-	EmojiIconType
-	FileIconType
-	ExternalIconType
-)
-
-var IconTypeToString = map[IconType]string{
-	EmojiIconType:    "emoji",
-	FileIconType:     "file",
-	ExternalIconType: "external",
-}
-
-var StringToIconType = map[string]IconType{
-	"emoji":    EmojiIconType,
-	"file":     FileIconType,
-	"external": ExternalIconType,
-}
-
-func (p *IconType) UnmarshalJSON(b []byte) error {
-	var v string
-	err := json.Unmarshal(b, &v)
-	if err != nil {
-		return err
-	}
-	res, ok := StringToIconType[v]
-	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
-	}
-	*p = res
-	return nil
-}
-
-func (p IconType) MarshalJSON() ([]byte, error) {
-	b := bytes.NewBufferString(`"`)
-	b.WriteString(IconTypeToString[p])
-	b.WriteString(`"`)
-	return b.Bytes(), nil
-}
-
 type DBProperties map[string]DBProperty
 
 type DBProperty struct {
@@ -196,7 +126,7 @@ type DBSelectProperties struct {
 
 type DBSelectProperty struct {
 	Name  string        `json:"name"`
-	Id    string        `json:"id,omitempty"`
+	ID    string        `json:"id,omitempty"`
 	Color PropertyColor `json:"color"`
 }
 
@@ -218,7 +148,7 @@ type DBRollupProperty struct {
 	Function             string `json:"function"`
 }
 
-type QuertyDBRq struct {
+type QueryDBRq struct {
 	Filter      *Filter `json:"filter,omitempty"`
 	Sorts       []Sort  `json:"sorts,omitempty"`
 	StartCursor string  `json:"start_cursor,omitempty"`
@@ -244,8 +174,8 @@ type Sort struct {
 		Notiion will accept it, but behaviour unpredictable(need to test)
 		TODO Think about validtion on exactly one of this
 	*/
-	Timestamp TimestampFilterType `json:"timestamp,omitempty"`
-	Direction SortDirection       `json:"direction"`
+	Timestamp TimestampConditionType `json:"timestamp,omitempty"`
+	Direction SortDirection          `json:"direction"`
 }
 
 type SortDirection int
@@ -288,8 +218,8 @@ func (p SortDirection) MarshalJSON() ([]byte, error) {
 
 //Add filter terst with timestamp
 type Filter struct {
-	Property  string              `json:"property,omitempty"`
-	Timestamp TimestampFilterType `json:"timestamp,omitempty"`
+	Property  string                 `json:"property,omitempty"`
+	Timestamp TimestampConditionType `json:"timestamp,omitempty"`
 
 	/*
 		If you will pass several conditions for one propery,
@@ -354,10 +284,10 @@ type NumberCondition struct {
 
 //by default go treats bool_field=false as empty
 //and if tag omitempty is present, bool_field=false will be erased from result json
-//that's why I use *bool here, instead bool.
+//that's why I use *bool hre, instead bool.
 //https://github.com/golang/go/issues/13284
 type CheckboxCondition struct {
-	Equals      *bool `json:"equals,omitempty"` //Doesnt work with bool type, need check
+	Equals      *bool `json:"equals,omitempty"`
 	DoesntEqual *bool `json:"does_not_equal,omitempty"`
 }
 
@@ -376,15 +306,10 @@ type MultiSelectCondition struct {
 }
 
 type DateCondition struct {
-	//should be a valid ISO 8601 date string
-	Equals *DateTimeWrap `json:"equals,omitempty"`
-	//should be a valid ISO 8601 date string
-	Before *DateTimeWrap `json:"before,omitempty"`
-	//should be a valid ISO 8601 date string
-	After *DateTimeWrap `json:"after,omitempty"`
-	//should be a valid ISO 8601 date string
-	OnOrBefore *DateTimeWrap `json:"on_or_before,omitempty"`
-	//should be a valid ISO 8601 date string
+	Equals     *DateTimeWrap      `json:"equals,omitempty"`
+	Before     *DateTimeWrap      `json:"before,omitempty"`
+	After      *DateTimeWrap      `json:"after,omitempty"`
+	OnOrBefore *DateTimeWrap      `json:"on_or_before,omitempty"`
 	OnOrAfter  *DateTimeWrap      `json:"on_or_after,omitempty"`
 	PastWeek   *DateTimeEmptyWrap `json:"past_week,omitempty"`
 	PastMonth  *DateTimeEmptyWrap `json:"past_month,omitempty"`
@@ -675,69 +600,69 @@ type DBPropertyType int
 
 const (
 	NoDBPropType DBPropertyType = iota
-	PropTypeTitle
-	PropTypeRichText
-	PropTypeNumber
-	PropTypeSelect
-	PropTypeMultiSelect
-	PropTypeDate
-	PropTypePeople
-	PropTypeFiles
-	PropTypeCheckbox
-	PropTypeURL
-	PropTypeEmail
-	PropTypePhoneNumber
-	PropTypeFormula
-	PropTypeRelation
-	PropTypeRollup
-	PropTypeCreatedTime
-	PropTypeCreatedBy
-	PropTypeLastEditedTime
-	PropTypeLastEditedBy
+	DBPropTypeTitle
+	DBPropTypeRichText
+	DBPropTypeNumber
+	DBPropTypeSelect
+	DBPropTypeMultiSelect
+	DBPropTypeDate
+	DBPropTypePeople
+	DBPropTypeFiles
+	DBPropTypeCheckbox
+	DBPropTypeURL
+	DBPropTypeEmail
+	DBPropTypePhoneNumber
+	DBPropTypeFormula
+	DBPropTypeRelation
+	DBPropTypeRollup
+	DBPropTypeCreatedTime
+	DBPropTypeCreatedBy
+	DBPropTypeLastEditedTime
+	DBPropTypeLastEditedBy
 )
 
 var PropTypeToString = map[DBPropertyType]string{
-	PropTypeTitle:          "title",
-	PropTypeRichText:       "rich_text",
-	PropTypeNumber:         "number",
-	PropTypeSelect:         "select",
-	PropTypeMultiSelect:    "multi_select",
-	PropTypeDate:           "date",
-	PropTypePeople:         "people",
-	PropTypeFiles:          "files",
-	PropTypeCheckbox:       "checkbox",
-	PropTypeURL:            "url",
-	PropTypeEmail:          "email",
-	PropTypePhoneNumber:    "phone_number",
-	PropTypeFormula:        "formula",
-	PropTypeRelation:       "relation",
-	PropTypeRollup:         "rollup",
-	PropTypeCreatedTime:    "created_time",
-	PropTypeCreatedBy:      "created_by",
-	PropTypeLastEditedTime: "last_edited_time",
-	PropTypeLastEditedBy:   "last_edited_by",
+	DBPropTypeTitle:          "title",
+	DBPropTypeRichText:       "rich_text",
+	DBPropTypeNumber:         "number",
+	DBPropTypeSelect:         "select",
+	DBPropTypeMultiSelect:    "multi_select",
+	DBPropTypeDate:           "date",
+	DBPropTypePeople:         "people",
+	DBPropTypeFiles:          "files",
+	DBPropTypeCheckbox:       "checkbox",
+	DBPropTypeURL:            "url",
+	DBPropTypeEmail:          "email",
+	DBPropTypePhoneNumber:    "phone_number",
+	DBPropTypeFormula:        "formula",
+	DBPropTypeRelation:       "relation",
+	DBPropTypeRollup:         "rollup",
+	DBPropTypeCreatedTime:    "created_time",
+	DBPropTypeCreatedBy:      "created_by",
+	DBPropTypeLastEditedTime: "last_edited_time",
+	DBPropTypeLastEditedBy:   "last_edited_by",
 }
 
 var StringToPropType = map[string]DBPropertyType{
-	"title":            PropTypeTitle,
-	"rich_text":        PropTypeRichText,
-	"number":           PropTypeNumber,
-	"select":           PropTypeSelect,
-	"multi_select":     PropTypeMultiSelect,
-	"date":             PropTypeDate,
-	"people":           PropTypePeople,
-	"files":            PropTypeFiles,
-	"checkbox":         PropTypeCheckbox,
-	"url":              PropTypeURL,
-	"email":            PropTypeEmail,
-	"phone_number":     PropTypePhoneNumber,
-	"formula":          PropTypeFormula,
-	"relation":         PropTypeRelation,
-	"rollup":           PropTypeRollup,
-	"created_time":     PropTypeCreatedTime,
-	"created_by":       PropTypeCreatedBy,
-	"last_edited_time": PropTypeLastEditedTime,
-	"last_edited_by":   PropTypeLastEditedBy,
+	"title":            DBPropTypeTitle,
+	"rich_text":        DBPropTypeRichText,
+	"number":           DBPropTypeNumber,
+	"select":           DBPropTypeSelect,
+	"multi_select":     DBPropTypeMultiSelect,
+	"date":             DBPropTypeDate,
+	"people":           DBPropTypePeople,
+	"files":            DBPropTypeFiles,
+	"checkbox":         DBPropTypeCheckbox,
+	"url":              DBPropTypeURL,
+	"email":            DBPropTypeEmail,
+	"phone_number":     DBPropTypePhoneNumber,
+	"formula":          DBPropTypeFormula,
+	"relation":         DBPropTypeRelation,
+	"rollup":           DBPropTypeRollup,
+	"created_time":     DBPropTypeCreatedTime,
+	"created_by":       DBPropTypeCreatedBy,
+	"last_edited_time": DBPropTypeLastEditedTime,
+	"last_edited_by":   DBPropTypeLastEditedBy,
 }
 
 func (p *DBPropertyType) UnmarshalJSON(b []byte) error {
@@ -757,68 +682,6 @@ func (p *DBPropertyType) UnmarshalJSON(b []byte) error {
 func (p DBPropertyType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
 	b.WriteString(PropTypeToString[p])
-	b.WriteString(`"`)
-	return b.Bytes(), nil
-}
-
-type PropertyColor int
-
-const (
-	DefaultColor PropertyColor = iota
-	Gray
-	Brown
-	Orange
-	Yellow
-	Green
-	Blue
-	Purple
-	Pink
-	Red
-)
-
-var ColorToString = map[PropertyColor]string{
-	DefaultColor: "default",
-	Gray:         "gray",
-	Brown:        "brown",
-	Orange:       "orange",
-	Yellow:       "yellow",
-	Green:        "green",
-	Blue:         "blue",
-	Purple:       "purple",
-	Pink:         "pink",
-	Red:          "red",
-}
-
-var StringToColor = map[string]PropertyColor{
-	"default": DefaultColor,
-	"gray":    Gray,
-	"brown":   Brown,
-	"orange":  Orange,
-	"yellow":  Yellow,
-	"green":   Green,
-	"blue":    Blue,
-	"purple":  Purple,
-	"pink":    Pink,
-	"red":     Red,
-}
-
-func (p *PropertyColor) UnmarshalJSON(b []byte) error {
-	var v string
-	err := json.Unmarshal(b, &v)
-	if err != nil {
-		return err
-	}
-	res, ok := StringToColor[v]
-	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
-	}
-	*p = res
-	return nil
-}
-
-func (p PropertyColor) MarshalJSON() ([]byte, error) {
-	b := bytes.NewBufferString(`"`)
-	b.WriteString(ColorToString[p])
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }
@@ -898,25 +761,25 @@ func (p RollupFunction) MarshalJSON() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-type TimestampFilterType int
+type TimestampConditionType int
 
 const (
-	NoTimestampFilterType TimestampFilterType = iota
+	NoTimestampFilterType TimestampConditionType = iota
 	CreatedTime
 	LastEditedTime
 )
 
-var TimestampFilterTypeToString = map[TimestampFilterType]string{
+var TimestampFilterTypeToString = map[TimestampConditionType]string{
 	CreatedTime:    "created_time",
 	LastEditedTime: "last_edited_time",
 }
 
-var StringToTimestampFilterType = map[string]TimestampFilterType{
+var StringToTimestampFilterType = map[string]TimestampConditionType{
 	"created_time":     CreatedTime,
 	"last_edited_time": LastEditedTime,
 }
 
-func (p *TimestampFilterType) UnmarshalJSON(b []byte) error {
+func (p *TimestampConditionType) UnmarshalJSON(b []byte) error {
 	var v string
 	err := json.Unmarshal(b, &v)
 	if err != nil {
@@ -930,7 +793,7 @@ func (p *TimestampFilterType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p TimestampFilterType) MarshalJSON() ([]byte, error) {
+func (p TimestampConditionType) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
 	b.WriteString(TimestampFilterTypeToString[p])
 	b.WriteString(`"`)

@@ -156,12 +156,12 @@ func AssertEqualsStruct(t *testing.T, expected interface{}, actual interface{}) 
 	ok := reflect.DeepEqual(expected, actual)
 	if !ok {
 		t.Fatalf(`%s
-			Expected:%+v
-			Actual:  %+v
-			`, failed, expected, actual)
+			Expected:%v
+			Actual:  %v
+			`, failed, PrettyPrint(expected), PrettyPrint(actual))
 	}
 	t.Logf(`%s
-	Expected:%+v
-	Actual:  %+v
-	`, success, expected, actual)
+	Expected:%v
+	Actual:  %v
+	`, success, PrettyPrint(expected), PrettyPrint(actual))
 }

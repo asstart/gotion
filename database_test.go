@@ -10,7 +10,7 @@ import (
 )
 
 type querydbTuple struct {
-	Source   *gotion.QuertyDBRq
+	Source   *gotion.QueryDBRq
 	Expected string
 }
 
@@ -26,11 +26,11 @@ type updatedbTuple struct {
 
 type retrievedbTuple struct {
 	Source   string
-	Expected gotion.Database
+	Expected gotion.DB
 }
 
 func TestMarshalEmptyQuery(t *testing.T) {
-	source := gotion.QuertyDBRq{}
+	source := gotion.QueryDBRq{}
 
 	expected := "{}"
 
@@ -40,7 +40,7 @@ func TestMarshalEmptyQuery(t *testing.T) {
 }
 
 func TestMarshalSingleLevelFilterQuery(t *testing.T) {
-	source := gotion.QuertyDBRq{
+	source := gotion.QueryDBRq{
 		Filter: &gotion.Filter{
 			Property: "language",
 			RichText: &gotion.TextCondition{
@@ -70,7 +70,7 @@ func TestMarshalSingleLevelFilterQuery(t *testing.T) {
 }
 
 func TestMarshal2NestedLevelFilter(t *testing.T) {
-	source := gotion.QuertyDBRq{
+	source := gotion.QueryDBRq{
 		Filter: &gotion.Filter{
 			And: []gotion.Filter{
 				{
@@ -154,61 +154,61 @@ func TestMarshal2NestedLevelFilter(t *testing.T) {
 
 func TestMarshalRichTextQuery(t *testing.T) {
 	type tuple struct {
-		Source   *gotion.QuertyDBRq
+		Source   *gotion.QueryDBRq
 		Expected string
 	}
 	se := []tuple{
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{Equals: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"equals":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{DoesntEqual: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"does_not_equal":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{Contains: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"contains":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{DoesntContain: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"does_not_contain":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{StartsWith: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"starts_with":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{EndsWith: "some_string"},
 				}},
 			`{"filter":{"property":"text","rich_text":{"ends_with":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{IsEmpty: true},
 				}},
 			`{"filter":{"property":"text","rich_text":{"is_empty": true}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "text", RichText: &gotion.TextCondition{IsNotEmpty: true},
 				}},
@@ -230,56 +230,56 @@ func TestMarshalRichTextQuery(t *testing.T) {
 func TestMarshalTitleQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{Equals: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"equals":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{DoesntEqual: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"does_not_equal":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{Contains: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"contains":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{DoesntContain: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"does_not_contain":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{StartsWith: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"starts_with":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{EndsWith: "some_string"},
 				}},
 			`{"filter":{"property":"title","title":{"ends_with":"some_string"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{IsEmpty: true},
 				}},
 			`{"filter":{"property":"title","title":{"is_empty": true}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "title", Title: &gotion.TextCondition{IsNotEmpty: true},
 				}},
@@ -301,56 +301,56 @@ func TestMarshalTitleQuery(t *testing.T) {
 func TestMarshalURLQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{Equals: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"equals":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{DoesntEqual: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"does_not_equal":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{Contains: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"contains":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{DoesntContain: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"does_not_contain":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{StartsWith: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"starts_with":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{EndsWith: "https://github.com/"},
 				}},
 			`{"filter":{"property":"url","url":{"ends_with":"https://github.com/"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{IsEmpty: true},
 				}},
 			`{"filter":{"property":"url","url":{"is_empty": true}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "url", URL: &gotion.TextCondition{IsNotEmpty: true},
 				}},
@@ -372,56 +372,56 @@ func TestMarshalURLQuery(t *testing.T) {
 func TestMarshalEmailQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{Equals: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"equals":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{DoesntEqual: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"does_not_equal":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{Contains: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"contains":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{DoesntContain: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"does_not_contain":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{StartsWith: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"starts_with":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{EndsWith: "test@mail.ru"},
 				}},
 			`{"filter":{"property":"email","email":{"ends_with":"test@mail.ru"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{IsEmpty: true},
 				}},
 			`{"filter":{"property":"email","email":{"is_empty": true}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "email", Email: &gotion.TextCondition{IsNotEmpty: true},
 				}},
@@ -443,56 +443,56 @@ func TestMarshalEmailQuery(t *testing.T) {
 func TestMarshalPhoneNumberQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{Equals: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"equals":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{DoesntEqual: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"does_not_equal":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{Contains: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"contains":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{DoesntContain: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"does_not_contain":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{StartsWith: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"starts_with":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{EndsWith: "+19876543210"},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"ends_with":"+19876543210"}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{IsEmpty: true},
 				}},
 			`{"filter":{"property":"phone_number","phone_number":{"is_empty": true}}}`,
 		},
 		{
-			&gotion.QuertyDBRq{
+			&gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "phone_number", PhoneNumber: &gotion.TextCondition{IsNotEmpty: true},
 				}},
@@ -514,56 +514,56 @@ func TestMarshalPhoneNumberQuery(t *testing.T) {
 func TestMarshalNumberQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{Equals: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"equals":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{DoesntEqual: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"does_not_equal":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{GreaterThan: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"greater_than":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{LessThan: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"less_than":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{GreaterThanOrEqualTo: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"greater_than_or_equal_to":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{LessThanOrEqualTo: 10},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"less_than_or_equal_to":10}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{IsEmpty: true},
 			}},
 			Expected: `{"filter":{"property":"number","number":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "number",
 				Number:   &gotion.NumberCondition{IsNotEmpty: true},
 			}},
@@ -585,7 +585,7 @@ func TestMarshalNumberQuery(t *testing.T) {
 func TestMarshalCheckboxQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "checkbox",
 				Checkbox: &gotion.CheckboxCondition{
 					Equals: utils.BoolPtr(true),
@@ -595,7 +595,7 @@ func TestMarshalCheckboxQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"checkbox","checkbox":{"equals":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "checkbox",
 				Checkbox: &gotion.CheckboxCondition{
 					Equals: utils.BoolPtr(false),
@@ -605,7 +605,7 @@ func TestMarshalCheckboxQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"checkbox","checkbox":{"equals":false}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "checkbox",
 				Checkbox: &gotion.CheckboxCondition{
 					DoesntEqual: utils.BoolPtr(true),
@@ -615,7 +615,7 @@ func TestMarshalCheckboxQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"checkbox","checkbox":{"does_not_equal":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "checkbox",
 				Checkbox: &gotion.CheckboxCondition{
 					DoesntEqual: utils.BoolPtr(false),
@@ -640,7 +640,7 @@ func TestMarshalCheckboxQuery(t *testing.T) {
 func TestMarshalSelectQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "select",
 				Select: &gotion.SelectCondition{
 					Equals: "tag",
@@ -649,7 +649,7 @@ func TestMarshalSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"select","select":{"equals":"tag"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "select",
 				Select: &gotion.SelectCondition{
 					DoesntEqual: "tag",
@@ -658,7 +658,7 @@ func TestMarshalSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"select","select":{"does_not_equal":"tag"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "select",
 				Select: &gotion.SelectCondition{
 					IsEmpty: true,
@@ -667,7 +667,7 @@ func TestMarshalSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"select","select":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "select",
 				Select: &gotion.SelectCondition{
 					IsNotEmpty: true,
@@ -691,7 +691,7 @@ func TestMarshalSelectQuery(t *testing.T) {
 func TestMarshalMultiSelectQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "multi_select",
 				MultiSelect: &gotion.MultiSelectCondition{
 					Contains: "tag",
@@ -700,7 +700,7 @@ func TestMarshalMultiSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"multi_select","multi_select":{"contains":"tag"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "multi_select",
 				MultiSelect: &gotion.MultiSelectCondition{
 					DoesntContain: "tag",
@@ -709,7 +709,7 @@ func TestMarshalMultiSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"multi_select","multi_select":{"does_not_contain":"tag"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "multi_select",
 				MultiSelect: &gotion.MultiSelectCondition{
 					IsEmpty: true,
@@ -718,7 +718,7 @@ func TestMarshalMultiSelectQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"multi_select","multi_select":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "multi_select",
 				MultiSelect: &gotion.MultiSelectCondition{
 					IsNotEmpty: true,
@@ -742,7 +742,7 @@ func TestMarshalMultiSelectQuery(t *testing.T) {
 func TestMarshalFileQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "file",
 				File: &gotion.FileCondition{
 					IsEmpty: true,
@@ -751,7 +751,7 @@ func TestMarshalFileQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"file","files":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "file",
 				File: &gotion.FileCondition{
 					IsNotEmpty: true,
@@ -775,7 +775,7 @@ func TestMarshalFileQuery(t *testing.T) {
 func TestMarshalRelationQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
 					Contains: "869ec06096fd48a7a7492b15c9502cc9",
@@ -784,7 +784,7 @@ func TestMarshalRelationQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"relation","relation":{"contains":"869ec06096fd48a7a7492b15c9502cc9"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
 					DoesntContains: "869ec06096fd48a7a7492b15c9502cc9",
@@ -793,7 +793,7 @@ func TestMarshalRelationQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"relation","relation":{"does_not_contain":"869ec06096fd48a7a7492b15c9502cc9"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
 					IsEmpty: true,
@@ -802,7 +802,7 @@ func TestMarshalRelationQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"relation","relation":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "relation",
 				Relation: &gotion.RelationCondition{
 					IsNotEmpty: true,
@@ -826,7 +826,7 @@ func TestMarshalRelationQuery(t *testing.T) {
 func TestMarshalPeopleQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "people",
 				People: &gotion.PeopleCondition{
 					Contains: "id_1",
@@ -835,7 +835,7 @@ func TestMarshalPeopleQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"people","people":{"contains":"id_1"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "people",
 				People: &gotion.PeopleCondition{
 					DoesntContains: "id_2",
@@ -844,7 +844,7 @@ func TestMarshalPeopleQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"people","people":{"does_not_contain":"id_2"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "people",
 				People: &gotion.PeopleCondition{
 					IsEmpty: true,
@@ -853,7 +853,7 @@ func TestMarshalPeopleQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"people","people":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "people",
 				People: &gotion.PeopleCondition{
 					IsNotEmpty: true,
@@ -877,7 +877,7 @@ func TestMarshalPeopleQuery(t *testing.T) {
 func TestMarshalCreatedByQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "created_by",
 				CreatedBy: &gotion.PeopleCondition{
 					Contains: "id_1",
@@ -886,7 +886,7 @@ func TestMarshalCreatedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"created_by","created_by":{"contains":"id_1"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "created_by",
 				CreatedBy: &gotion.PeopleCondition{
 					DoesntContains: "id_2",
@@ -895,7 +895,7 @@ func TestMarshalCreatedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"created_by","created_by":{"does_not_contain":"id_2"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "created_by",
 				CreatedBy: &gotion.PeopleCondition{
 					IsEmpty: true,
@@ -904,7 +904,7 @@ func TestMarshalCreatedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"created_by","created_by":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "created_by",
 				CreatedBy: &gotion.PeopleCondition{
 					IsNotEmpty: true,
@@ -928,7 +928,7 @@ func TestMarshalCreatedByQuery(t *testing.T) {
 func TestMarshalLastEditedByQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "last_edited_by",
 				LastEditedBy: &gotion.PeopleCondition{
 					Contains: "id_1",
@@ -937,7 +937,7 @@ func TestMarshalLastEditedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"last_edited_by","last_edited_by":{"contains":"id_1"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "last_edited_by",
 				LastEditedBy: &gotion.PeopleCondition{
 					DoesntContains: "id_2",
@@ -946,7 +946,7 @@ func TestMarshalLastEditedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"last_edited_by","last_edited_by":{"does_not_contain":"id_2"}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "last_edited_by",
 				LastEditedBy: &gotion.PeopleCondition{
 					IsEmpty: true,
@@ -955,7 +955,7 @@ func TestMarshalLastEditedByQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"last_edited_by","last_edited_by":{"is_empty":true}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "last_edited_by",
 				LastEditedBy: &gotion.PeopleCondition{
 					IsNotEmpty: true,
@@ -980,7 +980,7 @@ func TestMarshalFormulaQuery(t *testing.T) {
 	dt, _ := time.Parse(time.RFC3339, "2033-05-18T03:33:00.100+00:00")
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "formula",
 				Formula: &gotion.FormulaCondition{
 					String: &gotion.TextCondition{
@@ -991,7 +991,7 @@ func TestMarshalFormulaQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"formula","formula":{"string":{"equals":"10"}}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "formula",
 				Formula: &gotion.FormulaCondition{
 					Checkbox: &gotion.CheckboxCondition{
@@ -1002,7 +1002,7 @@ func TestMarshalFormulaQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"formula","formula":{"checkbox":{"equals":true}}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "formula",
 				Formula: &gotion.FormulaCondition{
 					Number: &gotion.NumberCondition{
@@ -1013,7 +1013,7 @@ func TestMarshalFormulaQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"formula","formula":{"number":{"equals":10}}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "formula",
 				Formula: &gotion.FormulaCondition{
 					Date: &gotion.DateCondition{
@@ -1041,7 +1041,7 @@ func TestMarshalFormulaQuery(t *testing.T) {
 func TestMarshalTRollupQuery(t *testing.T) {
 	se := []querydbTuple{
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "rollup",
 				Rollup: &gotion.RollupCondition{
 					Any: &gotion.RollupProperty{
@@ -1054,7 +1054,7 @@ func TestMarshalTRollupQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"rollup","rollup":{"any":{"rich_text":{"equals":"some_string"}}}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "rollup",
 				Rollup: &gotion.RollupCondition{
 					Every: &gotion.RollupProperty{
@@ -1067,7 +1067,7 @@ func TestMarshalTRollupQuery(t *testing.T) {
 			Expected: `{"filter":{"property":"rollup","rollup":{"every":{"rich_text":{"equals":"some_string"}}}}}`,
 		},
 		{
-			Source: &gotion.QuertyDBRq{Filter: &gotion.Filter{
+			Source: &gotion.QueryDBRq{Filter: &gotion.Filter{
 				Property: "rollup",
 				Rollup: &gotion.RollupCondition{
 					None: &gotion.RollupProperty{
@@ -1096,7 +1096,7 @@ func TestMarshallDateCondition(t *testing.T) {
 	dt, _ := time.Parse(time.RFC3339, "2033-05-18T03:33:00.100+00:00")
 	se := []querydbTuple{
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1109,7 +1109,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"equals":"2033-05-18T03:33:00.1Z"}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1122,7 +1122,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"before":"2033-05-18T03:33:00.1Z"}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1135,7 +1135,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"on_or_before":"2033-05-18T03:33:00.1Z"}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1148,7 +1148,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"after":"2033-05-18T03:33:00.1Z"}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1161,7 +1161,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"on_or_after":"2033-05-18T03:33:00.1Z"}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1172,7 +1172,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"past_week":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1183,7 +1183,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"past_month":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1194,7 +1194,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"past_year":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1205,7 +1205,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"next_week":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1216,7 +1216,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"next_month":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1227,7 +1227,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"next_year":{}}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1238,7 +1238,7 @@ func TestMarshallDateCondition(t *testing.T) {
 			Expected: `{"filter":{"property":"dateprop", "date":{"is_empty":true}}}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Filter: &gotion.Filter{
 					Property: "dateprop",
 					Date: &gotion.DateCondition{
@@ -1264,7 +1264,7 @@ func TestMarshallDateCondition(t *testing.T) {
 func TestQueryWithSort(t *testing.T) {
 	se := []querydbTuple{
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Property:  "title",
@@ -1275,7 +1275,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"property":"title","direction":"descending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Property: "title",
@@ -1285,7 +1285,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"property":"title","direction":"ascending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Property:  "title",
@@ -1296,7 +1296,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"property":"title","direction":"ascending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Timestamp: gotion.CreatedTime,
@@ -1306,7 +1306,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"timestamp":"created_time","direction":"ascending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Timestamp: gotion.CreatedTime,
@@ -1317,7 +1317,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"timestamp":"created_time","direction":"ascending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Timestamp: gotion.CreatedTime,
@@ -1328,7 +1328,7 @@ func TestQueryWithSort(t *testing.T) {
 			Expected: `{"sorts":[{"timestamp":"created_time","direction":"descending"}]}`,
 		},
 		querydbTuple{
-			Source: &gotion.QuertyDBRq{
+			Source: &gotion.QueryDBRq{
 				Sorts: []gotion.Sort{
 					gotion.Sort{
 						Timestamp: gotion.CreatedTime,
@@ -1355,7 +1355,7 @@ func TestQueryWithSort(t *testing.T) {
 }
 
 func TestQueryFillFilled(t *testing.T) {
-	query := gotion.QuertyDBRq{
+	query := gotion.QueryDBRq{
 		Filter: &gotion.Filter{
 			Property: "title",
 			RichText: &gotion.TextCondition{
@@ -1431,7 +1431,7 @@ func TestMarshallCreateDB(t *testing.T) {
 							Underline:     true,
 							Strikethrough: true,
 							Code:          true,
-							Color:         "red",
+							Color:         gotion.Red,
 						},
 					},
 					gotion.RichText{
@@ -1690,7 +1690,7 @@ func TestMarshallUpdateDb(t *testing.T) {
 	}
 }
 
-func TestUnmarshalDatabaseMeta(t *testing.T) {
+func TestUnmarshalEmptyDatabaseMeta(t *testing.T) {
 
 	se := []retrievedbTuple{
 		retrievedbTuple{
@@ -1727,7 +1727,7 @@ func TestUnmarshalDatabaseMeta(t *testing.T) {
 						"archived": false
 					}
 		  `,
-			Expected: gotion.Database{
+			Expected: gotion.DB{
 				Object: "database",
 				ID:     "d8959563-9ad5-4ed3-9176-08bb23e9f348",
 				CreatedTime: gotion.DateTimeWrap{
@@ -1749,7 +1749,7 @@ func TestUnmarshalDatabaseMeta(t *testing.T) {
 					"Name": gotion.DBProperty{
 						ID:    "title",
 						Name:  "Name",
-						Type:  gotion.PropTypeTitle,
+						Type:  gotion.DBPropTypeTitle,
 						Title: &gotion.DBDefaultProperty{},
 					},
 				},
@@ -1761,11 +1761,388 @@ func TestUnmarshalDatabaseMeta(t *testing.T) {
 				Archived: false,
 			},
 		},
+		retrievedbTuple{
+			Source: `
+			{
+				"object": "database",
+				"id": "f4c95e0b-bfc0-4517-b745-ce31dbb9ced9",
+				"cover": null,
+				"icon": null,
+				"created_time": "2022-06-07T21:52:00.000Z",
+				"created_by": {
+				  "object": "user",
+				  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+				},
+				"last_edited_by": {
+				  "object": "user",
+				  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+				},
+				"last_edited_time": "2022-06-07T21:53:00.000Z",
+				"title": [
+				  {
+					"type": "text",
+					"text": {
+					  "content": "Test workspace db request",
+					  "link": null
+					},
+					"annotations": {
+					  "bold": false,
+					  "italic": false,
+					  "strikethrough": false,
+					  "underline": false,
+					  "code": false,
+					  "color": "default"
+					},
+					"plain_text": "Test workspace db request",
+					"href": null
+				  }
+				],
+				"description": [],
+				"properties": {
+				  "Name": {
+					"id": "title",
+					"name": "Name",
+					"type": "title",
+					"title": {}
+				  }
+				},
+				"parent": {
+				  "type": "workspace",
+				  "workspace": true
+				},
+				"url": "https://www.notion.so/f4c95e0bbfc04517b745ce31dbb9ced9",
+				"archived": false
+			  }
+			`,
+			Expected: gotion.DB{
+				Object: "database",
+				ID:     "f4c95e0b-bfc0-4517-b745-ce31dbb9ced9",
+				CreatedTime: gotion.DateTimeWrap{
+					Datetime: time.Date(2022, 6, 7, 21, 52, 0, 0, time.UTC),
+				},
+				CreatedBy: gotion.User{
+					Object: "user",
+					ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+				},
+				LastEditedBy: gotion.User{
+					Object: "user",
+					ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+				},
+				LastEditedTime: gotion.DateTimeWrap{
+					Datetime: time.Date(2022, 6, 7, 21, 53, 0, 0, time.UTC),
+				},
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Type: gotion.TextRichTextType,
+						Text: &gotion.Text{
+							Content: "Test workspace db request",
+						},
+						Annotations: &gotion.Annotations{
+							Bold:          false,
+							Italic:        false,
+							Strikethrough: false,
+							Underline:     false,
+							Code:          false,
+							Color:         gotion.DefaultColor,
+						},
+						PlainText: "Test workspace db request",
+					},
+				},
+				Description: []gotion.RichText{},
+				Properties: gotion.DBProperties{
+					"Name": gotion.DBProperty{
+						ID:    "title",
+						Name:  "Name",
+						Type:  gotion.DBPropTypeTitle,
+						Title: &gotion.DBDefaultProperty{},
+					},
+				},
+				Parent: gotion.DBParent{
+					Type:      gotion.WorksapceDBParentType,
+					Workspace: true,
+				},
+				URL:      "https://www.notion.so/f4c95e0bbfc04517b745ce31dbb9ced9",
+				Archived: false,
+			},
+		},
 	}
 
 	for _, pair := range se {
-		res := gotion.Database{}
+		res := gotion.DB{}
 		json.Unmarshal([]byte(pair.Source), &res)
 		utils.AssertEqualsStruct(t, pair.Expected, res)
 	}
+}
+
+func TestUnmarshalFullFilledDatabaseMeta(t *testing.T) {
+	source := `
+	{
+		"object": "database",
+		"id": "44355a0c-b3a3-412c-99e4-64eee7b3b166",
+		"cover": {
+		  "type": "external",
+		  "external": {
+			"url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+		  }
+		},
+		"icon": {
+		  "type": "emoji",
+		  "emoji": "🎎"
+		},
+		"created_time": "2022-05-24T21:51:00.000Z",
+		"created_by": {
+		  "object": "user",
+		  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+		},
+		"last_edited_by": {
+		  "object": "user",
+		  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+		},
+		"last_edited_time": "2022-05-24T23:21:00.000Z",
+		"title": [
+		  {
+			"type": "text",
+			"text": {
+			  "content": "Full filled",
+			  "link": null
+			},
+			"annotations": {
+			  "bold": false,
+			  "italic": false,
+			  "strikethrough": false,
+			  "underline": false,
+			  "code": false,
+			  "color": "default"
+			},
+			"plain_text": "Full filled",
+			"href": null
+		  }
+		],
+		"description": [
+		  {
+			"type": "text",
+			"text": {
+			  "content": "Some description",
+			  "link": null
+			},
+			"annotations": {
+			  "bold": false,
+			  "italic": false,
+			  "strikethrough": false,
+			  "underline": false,
+			  "code": false,
+			  "color": "default"
+			},
+			"plain_text": "Some description",
+			"href": null
+		  }
+		],
+		"properties": {
+		  "Notion file": {
+			"id": "CxDT",
+			"name": "Notion file",
+			"type": "files",
+			"files": {}
+		  },
+		  "Number": {
+			"id": "IztH",
+			"name": "Number",
+			"type": "number",
+			"number": {
+			  "format": "number_with_commas"
+			}
+		  },
+		  "multiselect": {
+			"id": "L%7CWQ",
+			"name": "multiselect",
+			"type": "multi_select",
+			"multi_select": {
+			  "options": [
+				{
+				  "id": "ebea4dae-0fcb-4062-ab95-3f9b9aab38b5",
+				  "name": "tag1",
+				  "color": "yellow"
+				},
+				{
+				  "id": "cada643d-869b-46ad-b3a1-9a5b59f2194b",
+				  "name": "tag2",
+				  "color": "default"
+				}
+			  ]
+			}
+		  },
+		  "select": {
+			"id": "mAZx",
+			"name": "select",
+			"type": "select",
+			"select": {
+			  "options": [
+				{
+				  "id": "4a42f8e3-d9ef-4558-945a-50a0a5e62154",
+				  "name": "single",
+				  "color": "brown"
+				}
+			  ]
+			}
+		  },
+		  "Formula": {
+			"id": "%7Dkcv",
+			"name": "Formula",
+			"type": "formula",
+			"formula": {
+			  "expression": "pi"
+			}
+		  },
+		  "Name": {
+			"id": "title",
+			"name": "Name",
+			"type": "title",
+			"title": {}
+		  }
+		},
+		"parent": {
+		  "type": "page_id",
+		  "page_id": "b0b48eac-4251-4c2d-a3ab-126a9986cf72"
+		},
+		"url": "https://www.notion.so/44355a0cb3a3412c99e464eee7b3b166",
+		"archived": false
+	  }
+	`
+
+	expected := gotion.DB{
+		Object: "database",
+		ID:     "44355a0c-b3a3-412c-99e4-64eee7b3b166",
+		Cover: &gotion.FileDescriptor{
+			Type: gotion.ExternalFileDescriptorType,
+			ExternalFile: &gotion.ExternalFile{
+				URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+			},
+		},
+		Icon: &gotion.IconDescriptor{
+			Type:  gotion.EmojiIconType,
+			Emoji: "🎎",
+		},
+		CreatedTime: gotion.DateTimeWrap{
+			Datetime: time.Date(2022, 5, 24, 21, 51, 0, 0, time.UTC),
+		},
+		CreatedBy: gotion.User{
+			Object: "user",
+			ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+		},
+		LastEditedBy: gotion.User{
+			Object: "user",
+			ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+		},
+		LastEditedTime: gotion.DateTimeWrap{
+			Datetime: time.Date(2022, 5, 24, 23, 21, 0, 0, time.UTC),
+		},
+		Title: []gotion.RichText{
+			gotion.RichText{
+				Type: gotion.TextRichTextType,
+				Text: &gotion.Text{
+					Content: "Full filled",
+				},
+				Annotations: &gotion.Annotations{
+					Bold:          false,
+					Italic:        false,
+					Strikethrough: false,
+					Underline:     false,
+					Code:          false,
+					Color:         gotion.DefaultColor,
+				},
+				PlainText: "Full filled",
+			},
+		},
+		Description: []gotion.RichText{
+			gotion.RichText{
+				Type: gotion.TextRichTextType,
+				Text: &gotion.Text{
+					Content: "Some description",
+				},
+				Annotations: &gotion.Annotations{
+					Bold:          false,
+					Italic:        false,
+					Strikethrough: false,
+					Underline:     false,
+					Code:          false,
+					Color:         gotion.DefaultColor,
+				},
+				PlainText: "Some description",
+			},
+		},
+		Properties: gotion.DBProperties{
+			"Notion file": gotion.DBProperty{
+				ID:    "CxDT",
+				Name:  "Notion file",
+				Type:  gotion.DBPropTypeFiles,
+				Files: &gotion.DBDefaultProperty{},
+			},
+			"Number": gotion.DBProperty{
+				ID:   "IztH",
+				Name: "Number",
+				Type: gotion.DBPropTypeNumber,
+				Number: &gotion.DBNumberProperty{
+					Format: gotion.NumberWithCommas,
+				},
+			},
+			"multiselect": gotion.DBProperty{
+				ID:   "L%7CWQ",
+				Name: "multiselect",
+				Type: gotion.DBPropTypeMultiSelect,
+				MultiSelect: &gotion.DBSelectProperties{
+					Options: []gotion.DBSelectProperty{
+						gotion.DBSelectProperty{
+							ID:    "ebea4dae-0fcb-4062-ab95-3f9b9aab38b5",
+							Name:  "tag1",
+							Color: gotion.Yellow,
+						},
+						gotion.DBSelectProperty{
+							ID:    "cada643d-869b-46ad-b3a1-9a5b59f2194b",
+							Name:  "tag2",
+							Color: gotion.DefaultColor,
+						},
+					},
+				},
+			},
+			"select": gotion.DBProperty{
+				ID:   "mAZx",
+				Name: "select",
+				Type: gotion.DBPropTypeSelect,
+				Select: &gotion.DBSelectProperties{
+					Options: []gotion.DBSelectProperty{
+						gotion.DBSelectProperty{
+							ID:    "4a42f8e3-d9ef-4558-945a-50a0a5e62154",
+							Name:  "single",
+							Color: gotion.Brown,
+						},
+					},
+				},
+			},
+			"Formula": gotion.DBProperty{
+				ID:   "%7Dkcv",
+				Name: "Formula",
+				Type: gotion.DBPropTypeFormula,
+				Formula: &gotion.DBFormulatProperty{
+					Expression: "pi",
+				},
+			},
+			"Name": gotion.DBProperty{
+				ID:    "title",
+				Name:  "Name",
+				Type:  gotion.DBPropTypeTitle,
+				Title: &gotion.DBDefaultProperty{},
+			},
+		},
+		Parent: gotion.DBParent{
+			Type:   gotion.PageDBParentType,
+			PageID: "b0b48eac-4251-4c2d-a3ab-126a9986cf72",
+		},
+		URL:      "https://www.notion.so/44355a0cb3a3412c99e464eee7b3b166",
+		Archived: false,
+	}
+
+	var actual = gotion.DB{}
+	err := json.Unmarshal([]byte(source), &actual)
+	utils.AssertNil(t, err)
+	utils.AssertEqualsStruct(t, expected, actual)
 }
