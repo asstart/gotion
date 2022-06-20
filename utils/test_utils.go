@@ -6,6 +6,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 const (
@@ -146,6 +148,7 @@ func AssertEqualsTime(t *testing.T, expected time.Time, actual time.Time) {
 }
 
 func AssertEqualsStruct(t *testing.T, expected interface{}, actual interface{}) {
+	t.Helper()
 	if reflect.ValueOf(expected).Kind() != reflect.Struct {
 		t.Fatalf("expected should be a struct, but: %T", expected)
 	}
@@ -158,7 +161,8 @@ func AssertEqualsStruct(t *testing.T, expected interface{}, actual interface{}) 
 		t.Fatalf(`%s
 			Expected:%v
 			Actual:  %v
-			`, failed, PrettyPrint(expected), PrettyPrint(actual))
+			Diff: %v
+			`, failed, PrettyPrint(expected), PrettyPrint(actual), cmp.Diff(expected, actual))
 	}
 	t.Logf(`%s
 	Expected:%v

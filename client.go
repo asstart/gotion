@@ -59,32 +59,32 @@ func (nc *NotionClient) doRequest(req *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (nc *NotionClient) QueryDatabase(ctx context.Context, query QueryDBRq, database string) (DatabasePages, error) {
+func (nc *NotionClient) QueryDatabase(ctx context.Context, query QueryDBRq, database string) (Page, error) {
 	jsn, err := json.Marshal(query)
 	if err != nil {
-		return DatabasePages{}, err
+		return Page{}, err
 	}
 	req, err := http.NewRequest("POST", fmt.Sprintf("%v/%v/databases/%v/query", nc.BaseURL, nc.ApiVersion, database), bytes.NewBuffer(jsn))
 	if err != nil {
-		return DatabasePages{}, err
+		return Page{}, err
 	}
 
 	req = req.WithContext(ctx)
 
 	body, err := nc.doRequest(req)
 	if err != nil {
-		return DatabasePages{}, err
+		return Page{}, err
 	}
 
-	var pages DatabasePages
+	var pages Page
 	err = json.Unmarshal(body, &pages)
 	if err != nil {
-		return DatabasePages{}, err
+		return Page{}, err
 	}
 	return pages, nil
 }
 
-func (nc *NotionClient) UpdatePage(ctx context.Context, properties UpdatePage, pageId string) (Page, error) {
+func (nc *NotionClient) UpdatePage(ctx context.Context, properties Page, pageId string) (Page, error) {
 	jsn, err := json.Marshal(properties)
 	if err != nil {
 		return Page{}, err

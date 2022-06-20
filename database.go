@@ -107,7 +107,7 @@ type DBProperty struct {
 	PhoneNumber    *DBDefaultProperty  `json:"phone_number,omitempty"`
 	Formula        *DBFormulatProperty `json:"formula,omitempty"`
 	Relation       *DBRelationProperty `json:"relation,omitempty"`
-	Rollup         *RollupProperty     `json:"rollup,omitempty"`
+	Rollup         *RollupProperty     `json:"rollup,omitempty"` // TODO need fix this
 	CreatedTime    *DBDefaultProperty  `json:"created_time,omitempty"`
 	CreatedBy      *DBDefaultProperty  `json:"created_by,omitempty"`
 	LastEditedTime *DBDefaultProperty  `json:"last_edited_time,omitempty"`
@@ -153,6 +153,13 @@ type QueryDBRq struct {
 	Sorts       []Sort  `json:"sorts,omitempty"`
 	StartCursor string  `json:"start_cursor,omitempty"`
 	PageSize    int     `json:"page_size,omitempty"`
+}
+
+type QueryDBRs struct {
+	Object     string  `json:"object"`
+	Results    []Page  `json:"results"`
+	NextCursor *string `json:"next_cursor"`
+	HasMore    bool    `json:"has_more"`
 }
 
 type Sort struct {
@@ -690,6 +697,7 @@ type RollupFunction int
 
 const (
 	NoRollupFunc RollupFunction = iota
+	Count
 	CountAll
 	CountValues
 	CountUniqueValues
@@ -704,9 +712,13 @@ const (
 	Max
 	Range
 	ShowOriginal
+	EarliestDate
+	LatestDate
+	DateRange
 )
 
 var RollupFunctionToString = map[RollupFunction]string{
+	Count:             "count",
 	CountAll:          "count_all",
 	CountValues:       "count_values",
 	CountUniqueValues: "count_unique_values",
@@ -721,9 +733,13 @@ var RollupFunctionToString = map[RollupFunction]string{
 	Max:               "max",
 	Range:             "range",
 	ShowOriginal:      "show_origina",
+	EarliestDate:      "earliest_date",
+	LatestDate:        "latest_date",
+	DateRange:         "date_range",
 }
 
 var StringToRollupFunction = map[string]RollupFunction{
+	"count":               Count,
 	"count_all":           CountAll,
 	"count_values":        CountValues,
 	"count_unique_values": CountUniqueValues,
@@ -738,6 +754,9 @@ var StringToRollupFunction = map[string]RollupFunction{
 	"max":                 Max,
 	"range":               Range,
 	"show_origina":        ShowOriginal,
+	"earliest_date":       EarliestDate,
+	"latest_date":         LatestDate,
+	"date_range":          DateRange,
 }
 
 func (p *RollupFunction) UnmarshalJSON(b []byte) error {

@@ -1,0 +1,44 @@
+###
+
+#Retrieve page of parent page
+
+GET https://{{notion-host}}/v1/pages/1bcea86a2f574171a06bc6052bea314b HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Retrive page of parent workspace
+
+GET https://{{notion-host}}/v1/pages/b0b48eac42514c2da3ab126a9986cf72 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Retrieve page of parent DB
+
+GET https://{{notion-host}}/v1/pages/e0f73c2d7a2e4fc29f2873380ed76512 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Retrieve filled page
+
+GET https://{{notion-host}}/v1/pages/c1d21d5dfd19486a9888556f193c1b4d HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Retrieve page of parent DB with different rollups
+
+GET https://{{notion-host}}/v1/pages/96c917ebd00b4c7f9e3d6cdce17308fb HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json

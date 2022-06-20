@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -76,14 +77,75 @@ type Text struct {
 	Link    *Link  `json:"link,omitempty"`
 }
 
-type Mention struct {
-	MentionType string `json:"type,omitempty"`
+type Link struct {
+	URL string `json:"url"`
+}
 
-	User     *User         `json:"user,omitempty"`
-	Page     string        `json:"page,omitempty"`
-	Database string        `json:"database,omitempty"`
-	Date     *DateProperty `json:"date,omitempty"`
-	Template *Template     `json:"template_mention,omitempty"`
+type Mention struct {
+	Type MentionType `json:"type"`
+
+	User     *User             `json:"user,omitempty"`
+	Page     *IDWrap           `json:"page,omitempty"`
+	Database *IDWrap           `json:"database,omitempty"`
+	Date     *DatePageProperty `json:"date,omitempty"`
+	Template *Template         `json:"template_mention,omitempty"`
+}
+
+type IDWrap struct {
+	ID string `json:"id"`
+}
+
+type MentionType int
+
+const (
+	NoMentionType MentionType = iota
+	UserMentionType
+	PageMentionType
+	DatabaseMentionType
+	DateMentionType
+	LinkPriviewMentionType
+)
+
+var MentionTypeToString = map[MentionType]string{
+	UserMentionType:        "user",
+	PageMentionType:        "page",
+	DatabaseMentionType:    "database",
+	DateMentionType:        "date",
+	LinkPriviewMentionType: "link_preview",
+}
+
+var StringToMentionType = map[string]MentionType{
+	"user":        UserMentionType,
+	"page":        PageMentionType,
+	"database":    DatabaseMentionType,
+	"date":        DateMentionType,
+	"link_privew": LinkPriviewMentionType,
+}
+
+func (p *MentionType) UnmarshalJSON(b []byte) error {
+	var v string
+	err := json.Unmarshal(b, &v)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToMentionType[v]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value", res)
+	}
+	*p = res
+	return nil
+}
+
+func (p MentionType) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(MentionTypeToString[p])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+type Template struct {
+	TemplateMentionDate *string `json:"template_mention_date"`
+	TemplateMentionUser *string `json:"template_mention_user"`
 }
 
 type Equation struct {
@@ -92,6 +154,7 @@ type Equation struct {
 
 type FileDescriptor struct {
 	Type         FileDescriptorType `json:"type"`
+	Name         string             `json:"name,omitempty"`
 	ExternalFile *ExternalFile      `json:"external,omitempty"`
 	NotionFile   *NotionFile        `json:"file,omitempty"`
 }
@@ -147,8 +210,8 @@ type ExternalFile struct {
 }
 
 type NotionFile struct {
-	URL        string `json:"url"`
-	ExpireTime string `json:"expire_time"`
+	URL        string       `json:"url"`
+	ExpiryTime DateTimeWrap `json:"expiry_time"`
 }
 
 type Emoji struct {
@@ -167,8 +230,23 @@ func (dt DateTimeWrap) MarshalJSON() ([]byte, error) {
 type DateTimeEmptyWrap struct{}
 
 func (dt *DateTimeWrap) UnmarshalJSON(b []byte) error {
+	input := string(b)
+	//Of course this pattern isn't enough to get full validation of input date, but
+	//I use it here only to distinguish between date and datetime input
+	m, err := regexp.Match(`^"\d{4}-\d{2}-\d{2}"$`, b)
+	if err != nil {
+		return err
+	}
+	if m {
+		t, err := time.Parse(`"2006-01-02"`, input)
+		if err != nil {
+			return err
+		}
+		*dt = DateTimeWrap{Datetime: t}
+		return nil
+	}
 	var t = time.Time{}
-	err := json.Unmarshal(b, &t)
+	err = json.Unmarshal(b, &t)
 	if err != nil {
 		return err
 	}

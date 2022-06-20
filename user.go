@@ -18,7 +18,7 @@ type User struct {
 	Object    string   `json:"object,omitempty"`
 	Type      UserType `json:"type,omitempty"`
 	Name      string   `json:"name,omitempty"`
-	AvatarUrl string   `json:"avatar_url,omitempty"`
+	AvatarUrl *string  `json:"avatar_url,omitempty"`
 	Person    *Person  `json:"person,omitempty"`
 	Bot       *Bot     `json:"bot,omitempty"`
 }

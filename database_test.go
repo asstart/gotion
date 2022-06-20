@@ -2146,3 +2146,114 @@ func TestUnmarshalFullFilledDatabaseMeta(t *testing.T) {
 	utils.AssertNil(t, err)
 	utils.AssertEqualsStruct(t, expected, actual)
 }
+
+func TestQueryDBRs(t *testing.T) {
+	source := `
+	{
+		"object": "list",
+		"results": [
+		  {
+			"object": "page",
+			"id": "869ec060-96fd-48a7-a749-2b15c9502cc9",
+			"created_time": "2022-05-24T21:52:00.000Z",
+			"last_edited_time": "2022-05-24T23:18:00.000Z",
+			"created_by": {
+			  "object": "user",
+			  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+			},
+			"last_edited_by": {
+			  "object": "user",
+			  "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+			},
+			"cover": null,
+			"icon": null,
+			"parent": {
+			  "type": "database_id",
+			  "database_id": "44355a0c-b3a3-412c-99e4-64eee7b3b166"
+			},
+			"archived": false,
+			"properties": {
+			  "Name": {
+				"id": "title",
+				"type": "title",
+				"title": [
+				  {
+					"type": "text",
+					"text": {
+					  "content": "Row1",
+					  "link": null
+					},
+					"annotations": {
+					  "bold": false,
+					  "italic": false,
+					  "strikethrough": false,
+					  "underline": false,
+					  "code": false,
+					  "color": "default"
+					},
+					"plain_text": "Row1",
+					"href": null
+				  }
+				]
+			  }
+			},
+			"url": "https://www.notion.so/Row1-869ec06096fd48a7a7492b15c9502cc9"
+		  }
+		],
+		"next_cursor": null,
+		"has_more": false,
+		"type": "page",
+		"page": {}
+	  }
+	`
+
+	expected := gotion.QueryDBRs{
+		Object: "list",
+		Results: []gotion.Page{
+			gotion.Page{
+				Object: "page",
+				ID:     "869ec060-96fd-48a7-a749-2b15c9502cc9",
+				CreatedTime: gotion.DateTimeWrap{
+					Datetime: time.Date(2022, 5, 24, 21, 52, 0, 0, time.UTC),
+				},
+				LastEditedTime: gotion.DateTimeWrap{
+					Datetime: time.Date(2022, 5, 24, 23, 18, 0, 0, time.UTC),
+				},
+				CreatedBy: gotion.User{
+					Object: "user",
+					ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+				},
+				LastEditedBy: gotion.User{
+					Object: "user",
+					ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+				},
+				Parent: gotion.PageParent{
+					Type:       gotion.PageParentDB,
+					DatabaseID: "44355a0c-b3a3-412c-99e4-64eee7b3b166",
+				},
+				Properties: gotion.PageProperties{
+					"Name": gotion.PageProperty{
+						ID:   "title",
+						Type: gotion.DBPropTypeTitle,
+						Title: []gotion.RichText{
+							gotion.RichText{
+								Type: gotion.TextRichTextType,
+								Text: &gotion.Text{
+									Content: "Row1",
+								},
+								Annotations: &gotion.Annotations{},
+								PlainText:   "Row1",
+							},
+						},
+					},
+				},
+				URL: "https://www.notion.so/Row1-869ec06096fd48a7a7492b15c9502cc9",
+			},
+		},
+	}
+
+	var res = gotion.QueryDBRs{}
+	err := json.Unmarshal([]byte(source), &res)
+	utils.AssertNil(t, err)
+	utils.AssertEqualsStruct(t, expected, res)
+}
