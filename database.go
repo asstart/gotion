@@ -73,7 +73,7 @@ func (p *DBParentType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToDBParentType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -210,7 +210,7 @@ func (p *SortDirection) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToSortDirection[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -590,7 +590,7 @@ func (p *NumberPropertyFormat) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToNumberFormat[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -680,7 +680,7 @@ func (p *DBPropertyType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToPropType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -732,7 +732,7 @@ var RollupFunctionToString = map[RollupFunction]string{
 	Min:               "min",
 	Max:               "max",
 	Range:             "range",
-	ShowOriginal:      "show_origina",
+	ShowOriginal:      "show_original",
 	EarliestDate:      "earliest_date",
 	LatestDate:        "latest_date",
 	DateRange:         "date_range",
@@ -753,7 +753,7 @@ var StringToRollupFunction = map[string]RollupFunction{
 	"min":                 Min,
 	"max":                 Max,
 	"range":               Range,
-	"show_origina":        ShowOriginal,
+	"show_original":        ShowOriginal,
 	"earliest_date":       EarliestDate,
 	"latest_date":         LatestDate,
 	"date_range":          DateRange,
@@ -767,7 +767,7 @@ func (p *RollupFunction) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToRollupFunction[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -806,7 +806,7 @@ func (p *TimestampConditionType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToTimestampFilterType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil

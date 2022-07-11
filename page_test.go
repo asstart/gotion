@@ -1870,7 +1870,7 @@ func TestRetrievePage(t *testing.T) {
 							Function: gotion.ShowOriginal,
 						},
 					},
-					"Rollup Phone": {
+					"Rollup Phone ": {
 						ID:   "%3CVAv",
 						Type: gotion.DBPropTypeRollup,
 						Rollup: &gotion.RollupPageProperty{
@@ -1909,10 +1909,10 @@ func TestRetrievePage(t *testing.T) {
 										gotion.RichText{
 											Type: gotion.TextRichTextType,
 											Text: &gotion.Text{
-												Content: "Title With many diff styles",
+												Content: "Title with many diff styles",
 											},
 											Annotations: &gotion.Annotations{},
-											PlainText:   "Title With many diff styles",
+											PlainText:   "Title with many diff styles",
 										},
 									},
 								},
@@ -1946,7 +1946,7 @@ func TestRetrievePage(t *testing.T) {
 							Array: []gotion.RollupArrayValue{
 								gotion.RollupArrayValue{
 									Type:  gotion.DBPropTypeEmail,
-									Email: utils.StrPtr("est@mail.dev"),
+									Email: utils.StrPtr("test@mail.dev"),
 								},
 							},
 							Function: gotion.ShowOriginal,
@@ -2033,7 +2033,7 @@ func TestRetrievePage(t *testing.T) {
 						Rollup: &gotion.RollupPageProperty{
 							Type:     gotion.NumberRollupPropertyType,
 							Number:   utils.FloatPtr(1),
-							Function: gotion.CountAll,
+							Function: gotion.Count,
 						},
 					},
 					"Relation": gotion.PageProperty{
@@ -2131,9 +2131,19 @@ func TestRetrievePage(t *testing.T) {
 						},
 					},
 					"Rollup Median": gotion.PageProperty{
+						ID: "l%5Cmm",
+						Type: gotion.DBPropTypeRollup,
+						Rollup: &gotion.RollupPageProperty{
+							Type: gotion.NumberRollupPropertyType,
+							Number: utils.FloatPtr(30),
+							Function: gotion.Median,
+						},
+					},
+					"Rollup Formula": gotion.PageProperty{
 						ID:   "qH%60G",
 						Type: gotion.DBPropTypeRollup,
 						Rollup: &gotion.RollupPageProperty{
+							Type: gotion.ArrayRollupPropertyType,
 							Array: []gotion.RollupArrayValue{
 								gotion.RollupArrayValue{
 									Type: gotion.DBPropTypeFormula,
@@ -2146,8 +2156,8 @@ func TestRetrievePage(t *testing.T) {
 							Function: gotion.ShowOriginal,
 						},
 					},
-					"RollupRichText": gotion.PageProperty{
-						ID:   "",
+					"Rollup Rich Text": gotion.PageProperty{
+						ID:   "w%7BWX",
 						Type: gotion.DBPropTypeRollup,
 						Rollup: &gotion.RollupPageProperty{
 							Type: gotion.ArrayRollupPropertyType,

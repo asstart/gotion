@@ -50,7 +50,7 @@ func (p *RichTextType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToRichTextType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -82,7 +82,7 @@ type Link struct {
 }
 
 type Mention struct {
-	Type MentionType `json:"type"`
+	Type MentionType `json:"type,omitempty"`
 
 	User     *User             `json:"user,omitempty"`
 	Page     *IDWrap           `json:"page,omitempty"`
@@ -130,7 +130,7 @@ func (p *MentionType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToMentionType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -192,7 +192,7 @@ func (p *FileDescriptorType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToFileDescriptorType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -303,7 +303,7 @@ func (p *PropertyColor) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToColor[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -375,7 +375,7 @@ func (p *IconType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToIconType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil

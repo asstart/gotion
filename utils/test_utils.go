@@ -53,7 +53,7 @@ func AssertNil(t *testing.T, actual interface{}) {
 		t.Logf(`%s Value is nill`, success)
 	} else {
 		//TODO need to improve error message
-		t.Fatalf(`%s Expected nil value, but: %v`, failed, PrettyPrint(actual))
+		t.Fatalf(`%s Expected nil value, but: %v`, failed, actual)
 	}
 }
 

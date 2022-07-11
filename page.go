@@ -64,7 +64,7 @@ func (pt *PageParentType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToPageParent[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, pt)
 	}
 	*pt = res
 	return nil
@@ -162,7 +162,7 @@ func (p *PagePropertyFormulaType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToPagePropertyFormulaType[s]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil
@@ -242,7 +242,7 @@ func (p *RollupPropertyType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToRollupPropertyType[s]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	*p = res
 	return nil

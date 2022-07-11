@@ -65,7 +65,7 @@ func (p *UserType) UnmarshalJSON(b []byte) error {
 	}
 	res, ok := StringToUserType[v]
 	if !ok {
-		return fmt.Errorf("%v isn't enum value", res)
+		return fmt.Errorf("%v isn't enum value in %T", res, p)
 	}
 	p = &res
 	return nil
