@@ -1,0 +1,375 @@
+#Section with empty page under DB
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case empty row will be added to db
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"}, "properties":{"Name":{"title":[]}}}
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case column "Name" will filled with "Test title" value
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Test title with external file cover"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case column "Name" will filled with "Test title" value and 🎎 emoji as an icon will be created
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+    "icon": {
+        "type": "emoji",
+        "emoji": "🎎"
+    },
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Test title with external file cover"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case column "Name" will filled with "Test title" value and external file as an icon will be created
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+     "icon": {
+        "type": "external",
+        "external": {
+            "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+        }
+    },
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Test title with external file cover"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#Create page with icon as internal file doesn't work, so this request will return 400
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+     "icon": {
+        "type": "file",
+        "file": {
+            "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220725%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220725T220122Z&X-Amz-Expires=86400&X-Amz-Signature=3167b43f89de4c4a0ce8c48dd1d26c1e6339a9b780ca155b3e37f3d5f642195f&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+        }
+    },
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Test title with external file cover"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case column "Name" will filled with "Test title" value and external file as an cover will be created
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+     "cover": {
+        "type": "external",
+        "external": {
+            "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+        }
+    },
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Test title with external file cover"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+###
+
+#Create Page under DB
+#List of properties should conform with parent database schema
+#In this case column "Name" will filled with "Test title" value and internl file as an cover. This doesn't work
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "parent": {
+        "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+    },
+     "cover": {
+        "type": "file",
+        "file": {
+            "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220725%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220725T220122Z&X-Amz-Expires=86400&X-Amz-Signature=3167b43f89de4c4a0ce8c48dd1d26c1e6339a9b780ca155b3e37f3d5f642195f&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+        }
+    },
+    "properties": {
+        "Name": [
+            {
+                "text": {
+                    "content": "Test title with external file cover"
+                }
+            }
+        ]
+    }
+}
+
+#Section with generic fulfilled page under DB
+#Properties with types: created_time, created_by, formula, last_edited_time, last_edited_by shouldn't be populated with this request
+
+###
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "database_id": "5570292959d949d6be183c1fa33b1ba6"
+    },
+    "properties": {
+        "Barenumber": {
+            "number": 100    
+        },
+        "Checkbox": {
+            "checkbox": false
+        },
+        "Date": {
+            "date":{
+                "start": "2020-12-08T12:00:00Z"
+            }
+        },
+        "Email": {
+            "email": "justmail@test.com"
+        },
+        "Files": {
+            "files": [{
+                "type": "external",
+                "name": "test external file",
+                "external": {
+                    "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+                }
+            }]
+        },
+        "Formattednumber": {
+            "number": 100
+        },
+        "Multiselect": {
+            "multi_select":[{
+                    "name": "tag1_multi",
+                    "color": "blue"
+                }, {
+                    "name": "tag2_multi",
+                    "color": "orange"
+                }]
+        },
+        "Name": {
+            "title":[
+                {
+                    "text": {
+                        "content": "Minimal fullfilled"
+                    }
+                }
+        ]
+        },
+        "People": {
+            "people": [
+                {
+                    "object":"user",
+                    "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                }
+            ]
+        },
+        "Phone": {
+            "phone_number": "79998887766"
+        },
+        "Richtext": {
+            "rich_text": [{
+                "annotations": {
+                    "bold": true,
+                    "italic": true,
+                    "strikethrough": true,
+                    "underline": true,
+                    "code": true,
+                    "color": "red"
+                },
+                "text": {
+                    "content": "Hello"
+                }
+            }, {
+                "mention": {
+                    "user": {
+                        "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                    }
+                }
+            }, {
+                "equation": {
+                    "expression": "w+orld"
+                }
+            }]
+        },
+        "Select": {
+            "select": {
+                "name": "tag1",
+                "color": "blue"
+            }
+        },
+        "URL": {
+            "url": "website.com"
+        }
+    }
+}
+
+# Section with detalied requests by property types
+
+### Create Page Rq under DB with date filled by different ways
+
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "database_id": "179fadd543f24b288c5e6cb7b0f9a77f"
+    },
+    "properties": {
+        "Simple date": {
+            "date":{
+                "start": "2020-12-08T12:00:00Z"
+            }
+        },
+        "Date range": {
+            "date":{
+                "start": "2020-12-08T12:00:00Z",
+                "end": "2021-12-08T12:00:00Z"
+            }
+        },
+        "Date range with tz": {
+            "date":{
+                "start": "2020-12-08T12:00:00Z",
+                "end": "2021-12-08T12:00:00Z",
+                "time_zone": "Europe/Berlin"
+            }
+        },
+        "Simple date with tz": {
+            "date":{
+                "start": "2020-12-08T12:00:00Z",
+                "time_zone": "Europe/Berlin"
+            }
+        },
+        "Name": {
+            "title":[
+                {
+                    "text": {
+                        "content": "Minimal fullfilled"
+                    }
+                }
+            ]
+        }
+    }
+}

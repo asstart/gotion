@@ -3,7 +3,9 @@ package gotion
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 )
 
 type Page struct {
@@ -246,4 +248,41 @@ func (p *RollupPropertyType) UnmarshalJSON(b []byte) error {
 	}
 	*p = res
 	return nil
+}
+
+type CreatePageRq struct {
+	ID string
+	Properties PageProperties
+	// TODO children
+	Icon *IconDescriptor
+	Cover *FileDescriptor
+}
+
+func (rq CreatePageRq)ValidateRequest() error {
+
+	buff := strings.Builder{}
+
+	if rq.ID == "" {
+		buff.WriteString(fmt.Sprintf("CreatePageRq.ID couldn't be empty\n"))
+	}
+
+	if rq.Properties == nil {
+		buff.WriteString("CreatePageRq.Properties couldn't be nil\n")
+	}
+
+	if rq.Icon != nil {
+		err := rq.Icon.ValidateRequest()
+		if err != nil {
+			buff.WriteString(err.Error())
+		}
+	}
+
+	if rq.Cover != nil {
+		err := rq.Cover.ValidateRequest()
+		if err != nil {
+			buff.WriteString(err.Error())
+		}
+	}
+
+	return errors.New(buff.String())
 }
