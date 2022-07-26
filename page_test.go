@@ -2,6 +2,7 @@ package gotion_test
 
 import (
 	"encoding/json"
+	"strings"
 	// "fmt"
 	"math"
 	"testing"
@@ -2131,11 +2132,11 @@ func TestRetrievePage(t *testing.T) {
 						},
 					},
 					"Rollup Median": gotion.PageProperty{
-						ID: "l%5Cmm",
+						ID:   "l%5Cmm",
 						Type: gotion.DBPropTypeRollup,
 						Rollup: &gotion.RollupPageProperty{
-							Type: gotion.NumberRollupPropertyType,
-							Number: utils.FloatPtr(30),
+							Type:     gotion.NumberRollupPropertyType,
+							Number:   utils.FloatPtr(30),
 							Function: gotion.Median,
 						},
 					},
@@ -2239,4 +2240,143 @@ func TestRetrievePage(t *testing.T) {
 		utils.AssertNil(t, err)
 		assert.Equal(t, tuple.Expected, res)
 	}
+}
+
+func TestCreateEmptyPage(t *testing.T) {
+
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Test title",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}}}`
+
+	json, err := json.Marshal(req)
+
+
+	assert.Nil(t, err)
+	assert.Equal(t, expected, string(json))
+
+}
+
+func TestCreatePageWithEmojiIcon(t *testing.T) {
+
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Test title",
+						},
+					},
+				},
+			},
+		},
+		Icon: &gotion.IconDescriptor{
+			Type: gotion.EmojiIconType,
+			Emoji: "🎎",
+		},
+	}
+	
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"icon":{"type":"emoji","emoji":"🎎"}}`
+
+	json, err := json.Marshal(req)
+
+
+	assert.Nil(t, err)
+	assert.Equal(t, expected, string(json))
+
+}
+
+func TestCreatePageWithEmojiExternalFile(t *testing.T) {
+
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Test title",
+						},
+					},
+				},
+			},
+		},
+		Icon: &gotion.IconDescriptor{
+			Type: gotion.ExternalIconType,
+			External: &gotion.ExternalFile{
+				URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+			},
+		},
+	}
+	
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"icon":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}` + "\n"
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	res := builder.String()
+
+	assert.Equal(t, expected, string(res))
+
+}
+
+
+func TestCreatePageWithCoverExternalFile(t *testing.T) {
+
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Test title",
+						},
+					},
+				},
+			},
+		},
+		Cover: &gotion.FileDescriptor{
+			Type: gotion.ExternalFileDescriptorType,
+			ExternalFile: &gotion.ExternalFile{
+				URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+			},
+		},
+	}
+	
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"cover":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}` + "\n"
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	res := builder.String()
+
+	assert.Equal(t, expected, string(res))
+
 }

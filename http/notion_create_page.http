@@ -94,7 +94,7 @@ Content-Type: application/json
     "parent": {
         "database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
     },
-     "icon": {
+    "icon": {
         "type": "external",
         "external": {
             "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
@@ -370,6 +370,112 @@ Content-Type: application/json
                     }
                 }
             ]
+        }
+    }
+}
+
+### Create Page Rq under DB with file filled by different ways
+
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "database_id": "33a050bb7c404d9db134f652cec3e633"
+    },
+    "properties": {
+        "Single internal file": {
+            "files": [{
+                "type": "file",
+                "name": "Single internal file",
+                "file": {
+                    "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+                }
+            }]
+        },
+        "Single external file": {
+            "files": [{
+                "type": "external",
+                "name": "Single external file",
+                "external": {
+                    "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+                }
+            }]
+        },
+        "Multiple internal files": {
+            "files": [
+            {
+                "type": "file",
+                "name": "internal file 1",
+                "file": {
+                    "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+                }
+            },
+            {
+                "type": "file",
+                "name": "internal file 2",
+                "file": {
+                    "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+                }
+            }]
+        },
+         "Multiple external files": {
+            "files": [{
+                "type": "external",
+                "name": "external file 1",
+                "external": {
+                    "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+                }
+            },
+            {
+                "type": "external",
+                "name": "external file 2",
+                "external": {
+                    "url": "https://images.unsplash.com/photo-1658847614828-d7d3e7cf8555?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1166&q=80"
+                }
+            }]
+        },
+        "Mixed files": {
+            "files": [{
+                "type": "file",
+                "name": "internal file 1",
+                "file": {
+                    "url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+                }
+            },
+            {
+                "type": "external",
+                "name": "external file 2",
+                "external": {
+                    "url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+                }
+            }]
+        }
+    }
+}
+
+# Need test rollup/relation etc.
+
+# Section with Create Page under page
+
+### Create page under another page. This doesn't work, but should
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "type": "page_id",
+        "page_id": "02e0fefa-38e6-47fb-99b1-ac066ac1cd86"
+    },
+    "properties": {
+        "Name": {
+            "title": []
         }
     }
 }

@@ -75,8 +75,8 @@ func (pt *PageParentType) UnmarshalJSON(b []byte) error {
 type PageProperties map[string]PageProperty
 
 type PageProperty struct {
-	ID   string         `json:"id"`
-	Type DBPropertyType `json:"type"`
+	ID   string         `json:"id,omitempty"`
+	Type DBPropertyType `json:"type,omitempty"`
 
 	Title          []RichText           `json:"title,omitempty"`
 	RichText       []RichText           `json:"rich_text,omitempty"`
@@ -250,15 +250,31 @@ func (p *RollupPropertyType) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+/*
+If pass empty value for text, like 
+
+gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+				},
+			},
+		},
+	}
+
+title will be omitted and error will be returned from notion
+need fix this
+*/
 type CreatePageRq struct {
-	ID string
+	ID         string // You can create page only with database as parent. Looks like bug, might need to be fixed later
 	Properties PageProperties
 	// TODO children
-	Icon *IconDescriptor
+	Icon  *IconDescriptor
 	Cover *FileDescriptor
 }
 
-func (rq CreatePageRq)ValidateRequest() error {
+func (rq CreatePageRq) ValidateRequest() error {
 
 	buff := strings.Builder{}
 
@@ -284,5 +300,58 @@ func (rq CreatePageRq)ValidateRequest() error {
 		}
 	}
 
-	return errors.New(buff.String())
+	final := buff.String()
+
+	if final == "" {
+		return nil
+	}
+
+	return errors.New(final)
+}
+
+func (rq CreatePageRq) MarshalJSON() ([]byte, error) {
+
+	err := rq.ValidateRequest()
+
+	if err != nil {
+		return nil, err
+	}
+
+	type parent struct {
+		DatabaseID string `json:"database_id"`
+	}
+
+	type dto struct {
+		Parent     parent         `json:"parent"`
+		Properties PageProperties `json:"properties"`
+		//chilldren add later
+		Icon  *IconDescriptor `json:"icon,omitempty"`
+		Cover *FileDescriptor `json:"cover,omitempty"`
+	}
+
+	o := dto{
+		Parent: parent{
+			DatabaseID: rq.ID,
+		},
+		Properties: rq.Properties,
+		Icon:       rq.Icon,
+		Cover:      rq.Cover,
+	}
+
+	buff := strings.Builder{}
+	enc := json.NewEncoder(&buff)
+	enc.SetEscapeHTML(false)
+	err = enc.Encode(o)
+
+	if err != nil {
+		return nil, err
+	}
+	return []byte(buff.String()), nil
+}
+
+type UpdatePageRq struct {
+	Archived   bool            `json:"archived"`
+	Properties PageProperties  `json:"properties,omitempty"`
+	Icon       *IconDescriptor `json:"icon,omitempty"`
+	Cover      *FileDescriptor `json:"cover,omitempty"`
 }

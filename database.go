@@ -753,7 +753,7 @@ var StringToRollupFunction = map[string]RollupFunction{
 	"min":                 Min,
 	"max":                 Max,
 	"range":               Range,
-	"show_original":        ShowOriginal,
+	"show_original":       ShowOriginal,
 	"earliest_date":       EarliestDate,
 	"latest_date":         LatestDate,
 	"date_range":          DateRange,

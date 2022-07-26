@@ -1,0 +1,79 @@
+###
+
+#Update Page under DB
+#List of properties should conform with parent database schema
+#In this case empty row will be added to db
+
+PATCH https://{{notion-host}}/v1/pages/fcc47a6663b7473393ec1a4d9fa52520 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "properties": {
+        "Name": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Updated title"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+###
+
+#Update Page under Page
+
+PATCH https://{{notion-host}}/v1/pages/44370321930941818723ec81dfe6f052 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "properties": {
+        "title": {
+            "title": [
+                {
+                    "text": {
+                        "content": "Updated title"
+                    }
+                }
+            ]
+        }
+    }
+}
+
+###
+
+#Archive Page under Page
+
+
+PATCH https://{{notion-host}}/v1/pages/1cebf11b0d614ba480cb3d5256208dbc HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "archived": true
+}
+
+###
+
+#UnArchive Page under Page
+
+
+PATCH https://{{notion-host}}/v1/pages/1cebf11b0d614ba480cb3d5256208dbc HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+
+{
+    "archived": false
+}
