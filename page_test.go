@@ -2,7 +2,9 @@ package gotion_test
 
 import (
 	"encoding/json"
+	// "fmt"
 	"strings"
+
 	// "fmt"
 	"math"
 	"testing"
@@ -1047,14 +1049,14 @@ func TestRetrievePage(t *testing.T) {
 						Type: gotion.DBPropTypeMultiSelect,
 						MultiSelect: []gotion.SelectPageProperty{
 							gotion.SelectPageProperty{
-								ID:    "6c0151da-c522-48e3-812b-428044bf9338",
+								ID:    utils.StrPtr("6c0151da-c522-48e3-812b-428044bf9338"),
 								Name:  "t11",
-								Color: gotion.Red,
+								Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Red))),
 							},
 							gotion.SelectPageProperty{
-								ID:    "01ba9b69-9953-4d2d-9cb7-8a32ef179388",
+								ID:    utils.StrPtr("01ba9b69-9953-4d2d-9cb7-8a32ef179388"),
 								Name:  "t12",
-								Color: gotion.Pink,
+								Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Pink))),
 							},
 						},
 					},
@@ -1145,7 +1147,7 @@ func TestRetrievePage(t *testing.T) {
 								Type: gotion.NotionFileDescriptorType,
 								NotionFile: &gotion.NotionFile{
 									URL: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/84650ce1-7307-48a5-9139-01f503db7019/exmpl.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220619%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220619T190041Z&X-Amz-Expires=3600&X-Amz-Signature=f101ca2bc0c7037c62b75e203fd5b27595d4aff000b586b1d8e1071649bfc69b&X-Amz-SignedHeaders=host&x-id=GetObject",
-									ExpiryTime: gotion.DateTimeWrap{
+									ExpiryTime: &gotion.DateTimeWrap{
 										Datetime: time.Date(2022, 6, 19, 20, 0, 41, int(932*math.Pow(10, 6)), time.UTC),
 									},
 								},
@@ -1156,9 +1158,9 @@ func TestRetrievePage(t *testing.T) {
 						ID:   "%7CRrh",
 						Type: gotion.DBPropTypeSelect,
 						Select: &gotion.SelectPageProperty{
-							ID:    "aeb7a7de-519f-4458-a77a-5058af1894e2",
+							ID:    utils.StrPtr("aeb7a7de-519f-4458-a77a-5058af1894e2"),
 							Name:  "t1",
-							Color: gotion.Blue,
+							Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
 						},
 					},
 					"Prop Text With Link": {
@@ -2083,9 +2085,9 @@ func TestRetrievePage(t *testing.T) {
 								gotion.RollupArrayValue{
 									Type: gotion.DBPropTypeSelect,
 									Select: &gotion.SelectPageProperty{
-										ID:    "aeb7a7de-519f-4458-a77a-5058af1894e2",
+										ID:    utils.StrPtr("aeb7a7de-519f-4458-a77a-5058af1894e2"),
 										Name:  "t1",
-										Color: gotion.Blue,
+										Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
 									},
 								},
 							},
@@ -2116,14 +2118,14 @@ func TestRetrievePage(t *testing.T) {
 									Type: gotion.DBPropTypeMultiSelect,
 									MultiSelect: []gotion.SelectPageProperty{
 										gotion.SelectPageProperty{
-											ID:    "6c0151da-c522-48e3-812b-428044bf9338",
+											ID:    utils.StrPtr("6c0151da-c522-48e3-812b-428044bf9338"),
 											Name:  "t11",
-											Color: gotion.Red,
+											Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Red))),
 										},
 										gotion.SelectPageProperty{
-											ID:    "01ba9b69-9953-4d2d-9cb7-8a32ef179388",
+											ID:    utils.StrPtr("01ba9b69-9953-4d2d-9cb7-8a32ef179388"),
 											Name:  "t12",
-											Color: gotion.Pink,
+											Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Pink))),
 										},
 									},
 								},
@@ -2263,9 +2265,8 @@ func TestCreateEmptyPage(t *testing.T) {
 
 	json, err := json.Marshal(req)
 
-
 	assert.Nil(t, err)
-	assert.Equal(t, expected, string(json))
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(string(json)))
 
 }
 
@@ -2285,18 +2286,17 @@ func TestCreatePageWithEmojiIcon(t *testing.T) {
 			},
 		},
 		Icon: &gotion.IconDescriptor{
-			Type: gotion.EmojiIconType,
+			Type:  gotion.EmojiIconType,
 			Emoji: "🎎",
 		},
 	}
-	
+
 	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"icon":{"type":"emoji","emoji":"🎎"}}`
 
 	json, err := json.Marshal(req)
 
-
 	assert.Nil(t, err)
-	assert.Equal(t, expected, string(json))
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(string(json)))
 
 }
 
@@ -2322,24 +2322,19 @@ func TestCreatePageWithEmojiExternalFile(t *testing.T) {
 			},
 		},
 	}
-	
-	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"icon":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}` + "\n"
+
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"icon":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}`
 
 	builder := strings.Builder{}
 	enc := json.NewEncoder(&builder)
 	enc.SetEscapeHTML(false)
 
-
 	err := enc.Encode(req)
 
 	assert.Nil(t, err)
-
-	res := builder.String()
-
-	assert.Equal(t, expected, string(res))
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
 
 }
-
 
 func TestCreatePageWithCoverExternalFile(t *testing.T) {
 
@@ -2363,20 +2358,814 @@ func TestCreatePageWithCoverExternalFile(t *testing.T) {
 			},
 		},
 	}
-	
-	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"cover":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}` + "\n"
+
+	expected := `{"parent":{"database_id":"7fb5f8a059eb45a585fa71ba40fd7a0f"},"properties":{"Name":{"title":[{"text":{"content":"Test title"}}]}},"cover":{"type":"external","external":{"url":"https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"}}}`
 
 	builder := strings.Builder{}
 	enc := json.NewEncoder(&builder)
 	enc.SetEscapeHTML(false)
 
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+
+}
+
+func TestCreatePageWithNumberProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Some number": gotion.PageProperty{
+				Number: utils.FloatPtr(199),
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Some number": {
+				"number": 199
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
 
 	err := enc.Encode(req)
 
 	assert.Nil(t, err)
 
-	res := builder.String()
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
 
-	assert.Equal(t, expected, string(res))
+func TestCreatePageWithCheckboxProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Some checkbox": gotion.PageProperty{
+				Checkbox: utils.BoolPtr(true),
+			},
+			"Some another checkbox": gotion.PageProperty{
+				Checkbox: utils.BoolPtr(false),
+			},
+		},
+	}
 
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Some another checkbox": {
+				"checkbox": false
+			},
+			"Some checkbox": {
+				"checkbox": true
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithDateProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Date range": gotion.PageProperty{
+				Date: &gotion.DatePageProperty{
+					Start: gotion.DateTimeWrap{
+						Datetime: time.Date(2020, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+					End: &gotion.DateTimeWrap{
+						Datetime: time.Date(2021, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+				},
+			},
+			"Date range with tz": gotion.PageProperty{
+				Date: &gotion.DatePageProperty{
+					Start: gotion.DateTimeWrap{
+						Datetime: time.Date(2020, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+					End: &gotion.DateTimeWrap{
+						Datetime: time.Date(2021, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+					TimeZone: utils.StrPtr("Europe/Berlin"),
+				},
+			},
+			"Simple date": gotion.PageProperty{
+				Date: &gotion.DatePageProperty{
+					Start: gotion.DateTimeWrap{
+						Datetime: time.Date(2020, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+				},
+			},
+			"Simple date with tz": gotion.PageProperty{
+				Date: &gotion.DatePageProperty{
+					Start: gotion.DateTimeWrap{
+						Datetime: time.Date(2020, 12, 8, 12, 0, 0, 0, time.UTC),
+					},
+					TimeZone: utils.StrPtr("Europe/Berlin"),
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Date range": {
+				"date":{
+					"start": "2020-12-08T12:00:00Z",
+					"end": "2021-12-08T12:00:00Z"
+				}
+			},
+			"Date range with tz": {
+				"date":{
+					"start": "2020-12-08T12:00:00Z",
+					"end": "2021-12-08T12:00:00Z",
+					"time_zone": "Europe/Berlin"
+				}
+			},
+			"Simple date": {
+				"date":{
+					"start": "2020-12-08T12:00:00Z"
+				}
+			},
+			"Simple date with tz": {
+				"date":{
+					"start": "2020-12-08T12:00:00Z",
+					"time_zone": "Europe/Berlin"
+				}
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithEmailProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Email": gotion.PageProperty{
+				Email: utils.StrPtr("justmail@test.com"),
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Email": {
+				"email": "justmail@test.com"
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithFileProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Single internal file": gotion.PageProperty{
+				Files: []gotion.FileDescriptor{
+					gotion.FileDescriptor{
+						Type: gotion.NotionFileDescriptorType,
+						Name: "Single internal file",
+						NotionFile: &gotion.NotionFile{
+							URL: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject",
+						},
+					},
+				},
+			},
+			"Single external file": gotion.PageProperty{
+				Files: []gotion.FileDescriptor{
+					gotion.FileDescriptor{
+						Type: gotion.ExternalFileDescriptorType,
+						Name: "Single external file",
+						ExternalFile: &gotion.ExternalFile{
+							URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+						},
+					},
+				},
+			},
+			"Multiple internal files": gotion.PageProperty{
+				Files: []gotion.FileDescriptor{
+					gotion.FileDescriptor{
+						Type: gotion.NotionFileDescriptorType,
+						Name: "internal file 1",
+						NotionFile: &gotion.NotionFile{
+							URL: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject",
+						},
+					},
+					gotion.FileDescriptor{
+						Type: gotion.NotionFileDescriptorType,
+						Name: "internal file 2",
+						NotionFile: &gotion.NotionFile{
+							URL: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject",
+						},
+					},
+				},
+			},
+			"Multiple external files": gotion.PageProperty{
+				Files: []gotion.FileDescriptor{
+					gotion.FileDescriptor{
+						Type: gotion.ExternalFileDescriptorType,
+						Name: "external file 1",
+						ExternalFile: &gotion.ExternalFile{
+							URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+						},
+					},
+					gotion.FileDescriptor{
+						Type: gotion.ExternalFileDescriptorType,
+						Name: "external file 2",
+						ExternalFile: &gotion.ExternalFile{
+							URL: "https://images.unsplash.com/photo-1658847614828-d7d3e7cf8555?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1166&q=80",
+						},
+					},
+				},
+			},
+			"Mixed files": gotion.PageProperty{
+				Files: []gotion.FileDescriptor{
+					gotion.FileDescriptor{
+						Type: gotion.NotionFileDescriptorType,
+						Name: "internal file 1",
+						NotionFile: &gotion.NotionFile{
+							URL: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject",
+						},
+					},
+					gotion.FileDescriptor{
+						Type: gotion.ExternalFileDescriptorType,
+						Name: "external file 2",
+						ExternalFile: &gotion.ExternalFile{
+							URL: "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Mixed files": {
+				"files": [{
+					"type": "file",
+					"name": "internal file 1",
+					"file": {
+						"url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+					}
+				},
+				{
+					"type": "external",
+					"name": "external file 2",
+					"external": {
+						"url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+					}
+				}]
+			},
+			"Multiple external files": {
+				"files": [{
+					"type": "external",
+					"name": "external file 1",
+					"external": {
+						"url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+					}
+				},
+				{
+					"type": "external",
+					"name": "external file 2",
+					"external": {
+						"url": "https://images.unsplash.com/photo-1658847614828-d7d3e7cf8555?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1166&q=80"
+					}
+				}]
+			},
+			"Multiple internal files": {
+				"files": [
+				{
+					"type": "file",
+					"name": "internal file 1",
+					"file": {
+						"url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+					}
+				},
+				{
+					"type": "file",
+					"name": "internal file 2",
+					"file": {
+						"url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+					}
+				}]
+			},
+			"Single external file": {
+				"files": [{
+					"type": "external",
+					"name": "Single external file",
+					"external": {
+						"url": "https://images.unsplash.com/photo-1559771752-0dc2b3a099c7?ixlib=rb-1.2.1&q=80&cs=tinysrgb&fm=jpg&crop=entropy"
+					}
+				}]
+			},
+			"Single internal file": {
+				"files": [{
+					"type": "file",
+					"name": "Single internal file",
+					"file": {
+						"url": "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d79af9d8-b4e9-49e9-ad32-7d96d604a8fd/photo_2022-02-02_00-46-03.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220726%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220726T215629Z&X-Amz-Expires=86400&X-Amz-Signature=c6e43c0ab1c16660ba771a5659cea1f584d5388bb1336c6bec9d9d10fa1a4fb4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22photo_2022-02-02_00-46-03.jpg%22&x-id=GetObject"
+					}
+				}]
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithMultiselectProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Multiselect": gotion.PageProperty{
+				MultiSelect: []gotion.SelectPageProperty{
+					gotion.SelectPageProperty{
+						Name:  "tag1_multi",
+						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+					},
+					gotion.SelectPageProperty{
+						Name:  "tag2_multi",
+						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Orange))),
+					},
+				},
+			},
+			"Multiselect one opt": gotion.PageProperty{
+				MultiSelect: []gotion.SelectPageProperty{
+					gotion.SelectPageProperty{
+						Name:  "tag3_multi",
+						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+					},
+				},
+			},
+			"Multiselect no color": gotion.PageProperty{
+				MultiSelect: []gotion.SelectPageProperty{
+					gotion.SelectPageProperty{
+						Name: "tag4_multi",
+					},
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Multiselect": {
+				"multi_select":[{
+						"name": "tag1_multi",
+						"color": "blue"
+					}, {
+						"name": "tag2_multi",
+						"color": "orange"
+					}]
+			},
+			"Multiselect no color": {
+				"multi_select":[{
+						"name": "tag4_multi"
+					}]
+			},
+			"Multiselect one opt": {
+				"multi_select":[{
+						"name": "tag3_multi",
+						"color": "blue"
+					}]
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+//TODO need add tests for bot users
+func TestCreatePageWithPeopleProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Person single": gotion.PageProperty{
+				People: []gotion.User{
+					gotion.User{
+						Object: "user",
+						ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+					},
+				},
+			},
+			"Person multi": gotion.PageProperty{
+				People: []gotion.User{
+					gotion.User{
+						Object: "user",
+						ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+					},
+					gotion.User{
+						Object: "user",
+						ID:     "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+					},
+				},
+			},
+			"Person no object": gotion.PageProperty{
+				People: []gotion.User{
+					gotion.User{
+						ID: "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+					},
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Person multi": {
+				"people": [
+					{
+						"object":"user",
+						"id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+					},
+					{
+						"object":"user",
+						"id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+					}
+				]
+			},
+			"Person no object": {
+				"people": [
+					{
+						"id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+					}
+				]
+			},
+			"Person single": {
+				"people": [
+					{
+						"object":"user",
+						"id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+					}
+				]
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithPhoneProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Phone": gotion.PageProperty{
+				PhoneNumber: utils.StrPtr("79998887766"),
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Phone": {
+				"phone_number": "79998887766"
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithRichTextProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Richtext": gotion.PageProperty{
+				RichText: []gotion.RichText{
+					gotion.RichText{
+						Annotations: &gotion.Annotations{
+							Bold:          true,
+							Italic:        true,
+							Strikethrough: true,
+							Underline:     true,
+							Code:          true,
+							Color:         gotion.Red,
+						},
+						Text: &gotion.Text{
+							Content: "Hello",
+						},
+					},
+					gotion.RichText{
+						Mention: &gotion.Mention{
+							User: &gotion.User{
+								ID: "c7f2ae70-6b98-438f-8564-c59a71d7b3a4",
+							},
+						},
+					},
+					gotion.RichText{
+						Equation: &gotion.Equation{
+							Expression: "w+orld",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Richtext": {
+				"rich_text": [{
+					"annotations": {
+						"bold": true,
+						"italic": true,
+						"strikethrough": true,
+						"underline": true,
+						"code": true,
+						"color": "red"
+					},
+					"text": {
+						"content": "Hello"
+					}
+				}, {
+					"mention": {
+						"user": {
+							"id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+						}
+					}
+				}, {
+					"equation": {
+						"expression": "w+orld"
+					}
+				}]
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithSelectProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"Select": gotion.PageProperty{
+				Select: &gotion.SelectPageProperty{
+					Name:  "tag1",
+					Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"Select": {
+				"select": {
+					"name": "tag1",
+					"color": "blue"
+				}
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestCreatePageWithURLProperty(t *testing.T) {
+	req := gotion.CreatePageRq{
+		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
+		Properties: gotion.PageProperties{
+			"URL": gotion.PageProperty{
+				URL: utils.StrPtr("website.com"),
+			},
+		},
+	}
+
+	expected := `
+	{
+		"parent": {
+			"database_id": "7fb5f8a059eb45a585fa71ba40fd7a0f"
+		},
+		"properties": {
+			"URL": {
+				"url": "website.com"
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestUpdatePage(t *testing.T) {
+	req := gotion.UpdatePageRq{
+		Properties: gotion.PageProperties{
+			"Name": gotion.PageProperty{
+				Title: []gotion.RichText{
+					gotion.RichText{
+						Text: &gotion.Text{
+							Content: "Updated title",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	expected := `
+	{
+		"properties": {
+			"Name": {
+				"title": [
+					{
+						"text": {
+							"content": "Updated title"
+						}
+					}
+				]
+			}
+		}
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestArchivePage(t *testing.T) {
+	req := gotion.UpdatePageRq{
+		Archived: utils.BoolPtr(true),
+	}
+
+	expected := `
+	{
+		"archived": true
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
+}
+
+func TestUnArchivePage(t *testing.T) {
+	req := gotion.UpdatePageRq{
+		Archived: utils.BoolPtr(false),
+	}
+
+	expected := `
+	{
+		"archived": false
+	}
+	`
+
+	builder := strings.Builder{}
+	enc := json.NewEncoder(&builder)
+	enc.SetEscapeHTML(false)
+
+	err := enc.Encode(req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, utils.Minimise(expected), utils.Minimise(builder.String()))
 }

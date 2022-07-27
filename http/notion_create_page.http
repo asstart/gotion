@@ -457,6 +457,86 @@ Content-Type: application/json
     }
 }
 
+### Create Page Rq under DB with multiselect filled by different ways
+
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "database_id": "2411b60c0dc24e16a84495103bb30787"
+    },
+    "properties": {
+        "Multiselect": {
+            "multi_select":[{
+                    "name": "tag1_multi",
+                    "color": "blue"
+                }, {
+                    "name": "tag2_multi",
+                    "color": "orange"
+                }]
+        },
+        "Multiselect one opt": {
+            "multi_select":[{
+                    "name": "tag3_multi",
+                    "color": "blue"
+                }]
+        },
+        "Multiselect no color": {
+            "multi_select":[{
+                    "name": "tag3_multi"
+                }]
+        }
+    }
+}
+
+### Create Page Rq under DB with people filled by different ways
+# Need test with bots
+
+POST https://{{notion-host}}/v1/pages/ HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+{
+    "parent": {
+        "database_id": "cb672010b33f4b5da28958627da6d09a"
+    },
+    "properties": {
+       "Person single": {
+            "people": [
+                {
+                    "object":"user",
+                    "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                }
+            ]
+        },
+        "Person multi": {
+            "people": [
+                {
+                    "object":"user",
+                    "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                },
+                {
+                    "object":"user",
+                    "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                }
+            ]
+        },
+        "Person no object": {
+            "people": [
+                {
+                    "id": "c7f2ae70-6b98-438f-8564-c59a71d7b3a4"
+                }
+            ]
+        }
+    }
+}
+
+
 # Need test rollup/relation etc.
 
 # Section with Create Page under page

@@ -14,8 +14,8 @@ The remaining properties may appear if the user is being rendered in a rich text
 and the bot has the correct capabilities to access those properties.
 **/
 type User struct {
-	ID        string   `json:"id"`
 	Object    string   `json:"object,omitempty"`
+	ID        string   `json:"id"`
 	Type      UserType `json:"type,omitempty"`
 	Name      string   `json:"name,omitempty"`
 	AvatarUrl *string  `json:"avatar_url,omitempty"`

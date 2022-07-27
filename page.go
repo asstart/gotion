@@ -100,9 +100,9 @@ type PageProperty struct {
 }
 
 type SelectPageProperty struct {
-	Name  string        `json:"name"`
-	ID    string        `json:"id"`
-	Color PropertyColor `json:"color"`
+	Name  string         `json:"name"`
+	ID    *string        `json:"id,omitempty"`
+	Color *PropertyColor `json:"color,omitempty"`
 }
 
 type DatePageProperty struct {
@@ -251,7 +251,7 @@ func (p *RollupPropertyType) UnmarshalJSON(b []byte) error {
 }
 
 /*
-If pass empty value for text, like 
+If pass empty value for text, like
 
 gotion.CreatePageRq{
 		ID: "7fb5f8a059eb45a585fa71ba40fd7a0f",
@@ -350,7 +350,7 @@ func (rq CreatePageRq) MarshalJSON() ([]byte, error) {
 }
 
 type UpdatePageRq struct {
-	Archived   bool            `json:"archived"`
+	Archived   *bool           `json:"archived,omitempty"`
 	Properties PageProperties  `json:"properties,omitempty"`
 	Icon       *IconDescriptor `json:"icon,omitempty"`
 	Cover      *FileDescriptor `json:"cover,omitempty"`

@@ -210,8 +210,8 @@ type ExternalFile struct {
 }
 
 type NotionFile struct {
-	URL        string       `json:"url"`
-	ExpiryTime DateTimeWrap `json:"expiry_time"`
+	URL        string        `json:"url"`
+	ExpiryTime *DateTimeWrap `json:"expiry_time,omitempty"`
 }
 
 type Emoji struct {
