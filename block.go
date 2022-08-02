@@ -225,33 +225,279 @@ func (p BlockType) MarshalJSON() ([]byte, error) {
 
 type TextBlock struct {
 	RichText []RichText `json:"rich_text"`
-	Color    string     `json:"color,omitempty"` //TODO colors in tags has lower count of available values or not? Check and make single color enum
+	Color    *Color     `json:"color,omitempty"`
 	Children []Block    `json:"children,omitempty"`
 }
 
 type HeadingBlock struct {
 	RichText []RichText `json:"rich_text"`
-	Color    string     `json:"color,omitempty"` //TODO colors in tags has lower count of available values or not? Check and make single color enum
+	Color    *Color     `json:"color,omitempty"`
 }
 
 type CalloutBlock struct {
 	RichText []RichText      `json:"rich_text"`
 	Icon     *IconDescriptor `json:"icon,omitempty"`
-	Color    string          `json:"color,omitempty"` //TODO colors in tags has lower count of available values or not? Check and make single color enum
+	Color    *Color          `json:"color,omitempty"`
 	Children []Block         `json:"children,omitempty"`
 }
 
 type TodoBlock struct {
 	RichText []RichText `json:"rich_text"`
 	Checked  bool       `json:"checked"`
-	Color    string     `json:"color,omitempty"` //TODO colors in tags has lower count of available values or not? Check and make single color enum
+	Color    *Color     `json:"color,omitempty"`
 	Children []Block    `json:"children,omitempty"`
 }
 
 type CodeBlock struct {
 	RichText []RichText `json:"rich_text"`
 	Caption  []RichText `json:"caption"`
-	Language string     `json:"color,omitempty"` //TODO add language enum
+	Language *Language  `json:"color,omitempty"`
+}
+
+type Language int
+
+const (
+	NoLanguage Language = iota
+	ABAP
+	Arduino
+	Bash
+	Basic
+	C
+	Clojure
+	CoffeeScript
+	CPlusPlus
+	CSharp
+	CSS
+	Dart
+	Diff
+	Docker
+	Elixir
+	Elm
+	Erlang
+	Flow
+	Fortran
+	FSharp
+	Gherkin
+	Glsl
+	Go
+	GraphQL
+	Groovy
+	Haskell
+	HTML
+	Java
+	JavaScript
+	JSON
+	Julia
+	Kotlin
+	LaTeX
+	LESS
+	Lisp
+	LiveScript
+	Lua
+	Makefile
+	Markdown
+	Markup
+	Matlab
+	Mermaid
+	nix
+	ObjectiveC
+	OCaml
+	Pascal
+	Perl
+	PHP
+	PlainText
+	PowerShell
+	Prolog
+	Protobuf
+	Python
+	R
+	Reason
+	Ruby
+	Rust
+	SASS
+	Scala
+	Scheme
+	SCSS
+	Shell
+	SQL
+	Swift
+	TypeScript
+	VBNet
+	Verilog
+	VHDL
+	VisualBasic
+	Webassembly
+	XML
+	YAML
+)
+
+var LanguageToString = map[Language]string{
+	ABAP:         "abap",
+	Arduino:      "arduino",
+	Bash:         "bash",
+	Basic:        "basic",
+	C:            "c",
+	Clojure:      "clojure",
+	CoffeeScript: "coffeescript",
+	CPlusPlus:    "c++",
+	CSharp:       "c#",
+	CSS:          "css",
+	Dart:         "dart",
+	Diff:         "diff",
+	Docker:       "docker",
+	Elixir:       "elixir",
+	Elm:          "elm",
+	Erlang:       "erlang",
+	Flow:         "flow",
+	Fortran:      "fortran",
+	FSharp:       "f#",
+	Gherkin:      "gherkin",
+	Glsl:         "glsl",
+	Go:           "go",
+	GraphQL:      "graphql",
+	Groovy:       "groovy",
+	Haskell:      "haskell",
+	HTML:         "html",
+	Java:         "java",
+	JavaScript:   "javascript",
+	JSON:         "json",
+	Julia:        "julia",
+	Kotlin:       "kotlin",
+	LaTeX:        "latex",
+	LESS:         "less",
+	Lisp:         "lisp",
+	LiveScript:   "livescript",
+	Lua:          "lua",
+	Makefile:     "makefile",
+	Markdown:     "markdown",
+	Markup:       "markup",
+	Matlab:       "matlab",
+	Mermaid:      "mermaid",
+	nix:          "nix",
+	ObjectiveC:   "objective-c",
+	OCaml:        "ocaml",
+	Pascal:       "pascal",
+	Perl:         "perl",
+	PHP:          "php",
+	PlainText:    "plain text",
+	PowerShell:   "powershell",
+	Prolog:       "prolog",
+	Protobuf:     "protobuf",
+	Python:       "python",
+	R:            "r",
+	Reason:       "reason",
+	Ruby:         "ruby",
+	Rust:         "rust",
+	SASS:         "sass",
+	Scala:        "scala",
+	Scheme:       "scheme",
+	SCSS:         "scss",
+	Shell:        "shell",
+	SQL:          "sql",
+	Swift:        "swift",
+	TypeScript:   "typescript",
+	VBNet:        "vb.net",
+	Verilog:      "verilog",
+	VHDL:         "vhdl",
+	VisualBasic:  "visual basic",
+	Webassembly:  "webassembly",
+	XML:          "xml",
+	YAML:         "yaml",
+}
+
+var StringToLanguage = map[string]Language{
+	"abap":         ABAP,
+	"arduino":      Arduino,
+	"bash":         Bash,
+	"basic":        Basic,
+	"c":            C,
+	"clojure":      Clojure,
+	"coffeescript": CoffeeScript,
+	"c++":          CPlusPlus,
+	"c#":           CSharp,
+	"css":          CSS,
+	"dart":         Dart,
+	"diff":         Diff,
+	"docker":       Docker,
+	"elixir":       Elixir,
+	"elm":          Elm,
+	"erlang":       Erlang,
+	"flow":         Flow,
+	"fortran":      Fortran,
+	"f#":           FSharp,
+	"gherkin":      Gherkin,
+	"glsl":         Glsl,
+	"go":           Go,
+	"graphql":      GraphQL,
+	"groovy":       Groovy,
+	"haskell":      Haskell,
+	"html":         HTML,
+	"java":         Java,
+	"javascript":   JavaScript,
+	"json":         JSON,
+	"julia":        Julia,
+	"kotlin":       Kotlin,
+	"latex":        LaTeX,
+	"less":         LESS,
+	"lisp":         Lisp,
+	"livescript":   LiveScript,
+	"lua":          Lua,
+	"makefile":     Makefile,
+	"markdown":     Markdown,
+	"markup":       Markup,
+	"matlab":       Matlab,
+	"mermaid":      Mermaid,
+	"nix":          nix,
+	"objective-c":  ObjectiveC,
+	"ocaml":        OCaml,
+	"pascal":       Pascal,
+	"perl":         Perl,
+	"php":          PHP,
+	"plain text":   PlainText,
+	"powershell":   PowerShell,
+	"prolog":       Prolog,
+	"protobuf":     Protobuf,
+	"python":       Python,
+	"r":            R,
+	"reason":       Reason,
+	"ruby":         Ruby,
+	"rust":         Rust,
+	"sass":         SASS,
+	"scala":        Scala,
+	"scheme":       Scheme,
+	"scss":         SCSS,
+	"shell":        Shell,
+	"sql":          SQL,
+	"swift":        Swift,
+	"typescript":   TypeScript,
+	"vb.net":       VBNet,
+	"verilog":      Verilog,
+	"vhdl":         VHDL,
+	"visual basic": VisualBasic,
+	"webassembly":  Webassembly,
+	"xml":          XML,
+	"yaml":         YAML,
+}
+
+func (l Language) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(LanguageToString[l])
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+func (l *Language) UnmarshalJSON(b []byte) error {
+	var s string
+	err := json.Unmarshal(b, &s)
+	if err != nil {
+		return err
+	}
+	res, ok := StringToLanguage[s]
+	if !ok {
+		return fmt.Errorf("%v isn't enum value in %T", res, l)
+	}
+	*l = res
+	return nil
 }
 
 type ChildBlock struct {
@@ -294,7 +540,7 @@ type EquationBlock struct {
 type DividerBlock struct{}
 
 type TableOfContentsBlock struct {
-	Color string `json:"color,omitempty"` //TODO colors in tags has lower count of available values or not? Check and make single color enum
+	Color *Color `json:"color,omitempty"`
 }
 
 type BreadCrumbBlock struct{}

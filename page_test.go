@@ -1051,12 +1051,12 @@ func TestRetrievePage(t *testing.T) {
 							gotion.SelectPageProperty{
 								ID:    utils.StrPtr("6c0151da-c522-48e3-812b-428044bf9338"),
 								Name:  "t11",
-								Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Red))),
+								Color: (*gotion.Color)(utils.IntPtr(int(gotion.Red))),
 							},
 							gotion.SelectPageProperty{
 								ID:    utils.StrPtr("01ba9b69-9953-4d2d-9cb7-8a32ef179388"),
 								Name:  "t12",
-								Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Pink))),
+								Color: (*gotion.Color)(utils.IntPtr(int(gotion.Pink))),
 							},
 						},
 					},
@@ -1160,7 +1160,7 @@ func TestRetrievePage(t *testing.T) {
 						Select: &gotion.SelectPageProperty{
 							ID:    utils.StrPtr("aeb7a7de-519f-4458-a77a-5058af1894e2"),
 							Name:  "t1",
-							Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+							Color: (*gotion.Color)(utils.IntPtr(int(gotion.Blue))),
 						},
 					},
 					"Prop Text With Link": {
@@ -2087,7 +2087,7 @@ func TestRetrievePage(t *testing.T) {
 									Select: &gotion.SelectPageProperty{
 										ID:    utils.StrPtr("aeb7a7de-519f-4458-a77a-5058af1894e2"),
 										Name:  "t1",
-										Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+										Color: (*gotion.Color)(utils.IntPtr(int(gotion.Blue))),
 									},
 								},
 							},
@@ -2120,12 +2120,12 @@ func TestRetrievePage(t *testing.T) {
 										gotion.SelectPageProperty{
 											ID:    utils.StrPtr("6c0151da-c522-48e3-812b-428044bf9338"),
 											Name:  "t11",
-											Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Red))),
+											Color: (*gotion.Color)(utils.IntPtr(int(gotion.Red))),
 										},
 										gotion.SelectPageProperty{
 											ID:    utils.StrPtr("01ba9b69-9953-4d2d-9cb7-8a32ef179388"),
 											Name:  "t12",
-											Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Pink))),
+											Color: (*gotion.Color)(utils.IntPtr(int(gotion.Pink))),
 										},
 									},
 								},
@@ -2746,11 +2746,11 @@ func TestCreatePageWithMultiselectProperty(t *testing.T) {
 				MultiSelect: []gotion.SelectPageProperty{
 					gotion.SelectPageProperty{
 						Name:  "tag1_multi",
-						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+						Color: (*gotion.Color)(utils.IntPtr(int(gotion.Blue))),
 					},
 					gotion.SelectPageProperty{
 						Name:  "tag2_multi",
-						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Orange))),
+						Color: (*gotion.Color)(utils.IntPtr(int(gotion.Orange))),
 					},
 				},
 			},
@@ -2758,7 +2758,7 @@ func TestCreatePageWithMultiselectProperty(t *testing.T) {
 				MultiSelect: []gotion.SelectPageProperty{
 					gotion.SelectPageProperty{
 						Name:  "tag3_multi",
-						Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+						Color: (*gotion.Color)(utils.IntPtr(int(gotion.Blue))),
 					},
 				},
 			},
@@ -3017,7 +3017,7 @@ func TestCreatePageWithSelectProperty(t *testing.T) {
 			"Select": gotion.PageProperty{
 				Select: &gotion.SelectPageProperty{
 					Name:  "tag1",
-					Color: (*gotion.PropertyColor)(utils.IntPtr(int(gotion.Blue))),
+					Color: (*gotion.Color)(utils.IntPtr(int(gotion.Blue))),
 				},
 			},
 		},

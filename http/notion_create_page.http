@@ -472,22 +472,22 @@ Content-Type: application/json
     "properties": {
         "Multiselect": {
             "multi_select":[{
-                    "name": "tag1_multi",
+                    "name": "tag5_multi",
                     "color": "blue"
                 }, {
-                    "name": "tag2_multi",
+                    "name": "tag6_multi",
                     "color": "orange"
                 }]
         },
         "Multiselect one opt": {
             "multi_select":[{
-                    "name": "tag3_multi",
+                    "name": "tag7_multi",
                     "color": "blue"
                 }]
         },
         "Multiselect no color": {
             "multi_select":[{
-                    "name": "tag3_multi"
+                    "name": "tag8_multi"
                 }]
         }
     }

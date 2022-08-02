@@ -64,12 +64,12 @@ func (p RichTextType) MarshalJSON() ([]byte, error) {
 }
 
 type Annotations struct {
-	Bold          bool          `json:"bold"`
-	Italic        bool          `json:"italic"`
-	Strikethrough bool          `json:"strikethrough"`
-	Underline     bool          `json:"underline"`
-	Code          bool          `json:"code"`
-	Color         PropertyColor `json:"color"`
+	Bold          bool  `json:"bold"`
+	Italic        bool  `json:"italic"`
+	Strikethrough bool  `json:"strikethrough"`
+	Underline     bool  `json:"underline"`
+	Code          bool  `json:"code"`
+	Color         Color `json:"color"`
 }
 
 type Text struct {
@@ -254,10 +254,10 @@ func (dt *DateTimeWrap) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type PropertyColor int
+type Color int
 
 const (
-	DefaultColor PropertyColor = iota
+	DefaultColor Color = iota
 	Gray
 	Brown
 	Orange
@@ -269,7 +269,7 @@ const (
 	Red
 )
 
-var ColorToString = map[PropertyColor]string{
+var ColorToString = map[Color]string{
 	DefaultColor: "default",
 	Gray:         "gray",
 	Brown:        "brown",
@@ -282,7 +282,7 @@ var ColorToString = map[PropertyColor]string{
 	Red:          "red",
 }
 
-var StringToColor = map[string]PropertyColor{
+var StringToColor = map[string]Color{
 	"default": DefaultColor,
 	"gray":    Gray,
 	"brown":   Brown,
@@ -295,7 +295,7 @@ var StringToColor = map[string]PropertyColor{
 	"red":     Red,
 }
 
-func (p *PropertyColor) UnmarshalJSON(b []byte) error {
+func (p *Color) UnmarshalJSON(b []byte) error {
 	var v string
 	err := json.Unmarshal(b, &v)
 	if err != nil {
@@ -309,7 +309,7 @@ func (p *PropertyColor) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (p PropertyColor) MarshalJSON() ([]byte, error) {
+func (p Color) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
 	b.WriteString(ColorToString[p])
 	b.WriteString(`"`)

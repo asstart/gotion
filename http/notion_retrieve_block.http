@@ -1,0 +1,252 @@
+###
+
+#Get paragraph block
+
+GET https://{{notion-host}}/v1/blocks/38457669f3db486d879d3ab81aab0868 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get h1 block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#2a664611b28d496d9d599a34ce958eb4
+GET https://{{notion-host}}/v1/blocks/2a664611b28d496d9d599a34ce958eb4 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get h2 block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#0a031d54c6274e679f9348a7b747fdea
+GET https://{{notion-host}}/v1/blocks/0a031d54c6274e679f9348a7b747fdea HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get h3 block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#572e40f516954b86a22cf9de4ff71324
+GET https://{{notion-host}}/v1/blocks/572e40f516954b86a22cf9de4ff71324 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get callout block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#e004f495887645a6b5ee94ae7b8ce6ff
+GET https://{{notion-host}}/v1/blocks/e004f495887645a6b5ee94ae7b8ce6ff HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get buletlist block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#a362db3442534fb5ab0e9c86ccfd3233
+GET https://{{notion-host}}/v1/blocks/a362db3442534fb5ab0e9c86ccfd3233 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get numlist block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#34fa8f22b6c646b3999d8885524acfee
+GET https://{{notion-host}}/v1/blocks/34fa8f22b6c646b3999d8885524acfee HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get todo unchecked block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#3cb64c3d1f944e0f8886b4a44e2b594c
+GET https://{{notion-host}}/v1/blocks/3cb64c3d1f944e0f8886b4a44e2b594c HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get todo checked block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#1728cbe7e607477bb1355b57e04e0eda
+GET https://{{notion-host}}/v1/blocks/1728cbe7e607477bb1355b57e04e0eda HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get toggle block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#36f309f36f0c44deacf765abd707505b
+GET https://{{notion-host}}/v1/blocks/36f309f36f0c44deacf765abd707505b HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get code block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#777a5bd104e347629c225a0f0a9f76c6
+GET https://{{notion-host}}/v1/blocks/777a5bd104e347629c225a0f0a9f76c6 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get child page block
+# https://www.notion.so/Single-child-page-for-test-612f67f9f04641e4810d1a49de093c53
+GET https://{{notion-host}}/v1/blocks/612f67f9f04641e4810d1a49de093c53 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get child database block
+# https://www.notion.so/b7052dc31b534840afcb039d893dbe2a?v=1de0755da56f4837b8a8dd44a0a5830a
+GET https://{{notion-host}}/v1/blocks/b7052dc31b534840afcb039d893dbe2a HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get embed block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#4165c38ac6b3447fa4cf2de17d986589
+GET https://{{notion-host}}/v1/blocks/4165c38ac6b3447fa4cf2de17d986589 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get external image block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#9ccc22402cf24c629adaeba7fc7204a8
+GET https://{{notion-host}}/v1/blocks/9ccc22402cf24c629adaeba7fc7204a8 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get internal image block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#4f4c9bf89c2f4a39982f0639fcf68c76
+GET https://{{notion-host}}/v1/blocks/4f4c9bf89c2f4a39982f0639fcf68c76 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get external video block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#3990ee537c8144a7a17933fa4603f6d2
+GET https://{{notion-host}}/v1/blocks/3990ee537c8144a7a17933fa4603f6d2 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get internal file block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#330005dcb2c740efbbb3982a5bee10c9
+GET https://{{notion-host}}/v1/blocks/330005dcb2c740efbbb3982a5bee10c9 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get internal pdf block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#da8f8108c1f04317942bafe65a5c63eb
+GET https://{{notion-host}}/v1/blocks/da8f8108c1f04317942bafe65a5c63eb HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get bookmark block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#fcd32ff39e7d4164918f6b002f820457
+GET https://{{notion-host}}/v1/blocks/fcd32ff39e7d4164918f6b002f820457 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get equation 1 block (paragraph equation)
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#abe05812769e414ca3a1c5315c402176
+GET https://{{notion-host}}/v1/blocks/abe05812769e414ca3a1c5315c402176 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get equation 2 block (fair equation)
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#ea1d226b4d40466fa026420fbe2cd603
+GET https://{{notion-host}}/v1/blocks/ea1d226b4d40466fa026420fbe2cd603 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get table of contents block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#afbf5f4e737f44a6a7a8f8ecf2433940
+GET https://{{notion-host}}/v1/blocks/afbf5f4e737f44a6a7a8f8ecf2433940 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json###
+
+###
+
+#Get breadcrumb block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#763f1c8e106343d9bebaf88f52794d28
+GET https://{{notion-host}}/v1/blocks/763f1c8e106343d9bebaf88f52794d28 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get link block (paragraph link)
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#2f8f9ea3f0ec4bd7a875330f3729a747
+GET https://{{notion-host}}/v1/blocks/2f8f9ea3f0ec4bd7a875330f3729a747 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get template block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#8942028776ec4b0b882f9d38992b67cd
+GET https://{{notion-host}}/v1/blocks/8942028776ec4b0b882f9d38992b67cd HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get link to page block
+# https://www.notion.so/a22003c8ee5540eeb96667cf38f70d43?v=b8a1f26c537c4b748df98914a72bbbf1
+#Not working - need check
+GET https://{{notion-host}}/v1/blocks/b8a1f26c537c4b748df98914a72bbbf1 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json
+
+###
+
+#Get table block
+# https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#e1f1e00af567451aa3bbe02346185352
+GET https://{{notion-host}}/v1/blocks/e1f1e00af567451aa3bbe02346185352 HTTP/1.1
+Authorization: Bearer {{notion-token}}
+Notion-Version: {{notion-version}}
+Content-Type: application/json

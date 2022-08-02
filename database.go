@@ -125,9 +125,9 @@ type DBSelectProperties struct {
 }
 
 type DBSelectProperty struct {
-	Name  string        `json:"name"`
-	ID    string        `json:"id,omitempty"`
-	Color PropertyColor `json:"color"`
+	Name  string `json:"name"`
+	ID    string `json:"id,omitempty"`
+	Color Color  `json:"color"`
 }
 
 type DBFormulatProperty struct {

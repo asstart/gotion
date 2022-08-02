@@ -100,9 +100,11 @@ type PageProperty struct {
 }
 
 type SelectPageProperty struct {
-	Name  string         `json:"name"`
-	ID    *string        `json:"id,omitempty"`
-	Color *PropertyColor `json:"color,omitempty"`
+	Name string  `json:"name"`
+	ID   *string `json:"id,omitempty"`
+	//Color works strange while creating pages. Looks like it doesn't have any effect on creating tag. Need test more.
+	//https://developers.notion.com/reference/property-value-object#multi-select-property-values
+	Color *Color `json:"color,omitempty"`
 }
 
 type DatePageProperty struct {
