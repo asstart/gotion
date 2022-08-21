@@ -157,6 +157,8 @@ type FileDescriptor struct {
 	Name         string             `json:"name,omitempty"`
 	ExternalFile *ExternalFile      `json:"external,omitempty"`
 	NotionFile   *NotionFile        `json:"file,omitempty"`
+	//This field isn't documented, but it's appeared in blocks
+	Caption []RichText `json:"caption,omitempty"`
 }
 
 type FileDescriptorType int
@@ -267,32 +269,59 @@ const (
 	Purple
 	Pink
 	Red
+	GrayBackground
+	BrownBackground
+	OrangeBackground
+	YellowBackground
+	GreenBackground
+	BlueBackground
+	PurpleBackground
+	PinkBackground
+	RedBackground
 )
 
 var ColorToString = map[Color]string{
-	DefaultColor: "default",
-	Gray:         "gray",
-	Brown:        "brown",
-	Orange:       "orange",
-	Yellow:       "yellow",
-	Green:        "green",
-	Blue:         "blue",
-	Purple:       "purple",
-	Pink:         "pink",
-	Red:          "red",
+	DefaultColor:     "default",
+	Gray:             "gray",
+	Brown:            "brown",
+	Orange:           "orange",
+	Yellow:           "yellow",
+	Green:            "green",
+	Blue:             "blue",
+	Purple:           "purple",
+	Pink:             "pink",
+	Red:              "red",
+	GrayBackground:   "gray_background",
+	BrownBackground:  "brown_background",
+	OrangeBackground: "orange_background",
+	YellowBackground: "yellow_background",
+	GreenBackground:  "green_background",
+	BlueBackground:   "blue_background",
+	PurpleBackground: "purple_background",
+	PinkBackground:   "pink_background",
+	RedBackground:    "red_background",
 }
 
 var StringToColor = map[string]Color{
-	"default": DefaultColor,
-	"gray":    Gray,
-	"brown":   Brown,
-	"orange":  Orange,
-	"yellow":  Yellow,
-	"green":   Green,
-	"blue":    Blue,
-	"purple":  Purple,
-	"pink":    Pink,
-	"red":     Red,
+	"default":           DefaultColor,
+	"gray":              Gray,
+	"brown":             Brown,
+	"orange":            Orange,
+	"yellow":            Yellow,
+	"green":             Green,
+	"blue":              Blue,
+	"purple":            Purple,
+	"pink":              Pink,
+	"red":               Red,
+	"gray_background":   GrayBackground,
+	"brown_background":  BrownBackground,
+	"orange_background": OrangeBackground,
+	"yellow_background": YellowBackground,
+	"green_background":  GreenBackground,
+	"blue_background":   BlueBackground,
+	"purple_background": PurpleBackground,
+	"pink_background":   PinkBackground,
+	"red_background":    RedBackground,
 }
 
 func (p *Color) UnmarshalJSON(b []byte) error {

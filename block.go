@@ -15,8 +15,8 @@ type Block struct {
 	CreatedBy      User         `json:"created_by"`
 	LastEditedTime DateTimeWrap `json:"last_edited_time"`
 	LastEditedBy   User         `json:"last_edited_by"`
-	Archived       *bool        `json:"archived,omitempty"`
-	HasChildred    *bool        `json:"has_children,omitempty"`
+	Archived       *bool        `json:"archived,omitempty"`     //TODO value instead pointer?
+	HasChildren    *bool        `json:"has_children,omitempty"` //TODO value instead pointer?
 
 	Paragraph        *TextBlock            `json:"paragraph,omitempty"`
 	Heading_1        *HeadingBlock         `json:"heading_1,omitempty"`
@@ -32,20 +32,20 @@ type Block struct {
 	ChildPage        *ChildBlock           `json:"child_page,omitempty"`
 	ChildDatabase    *ChildBlock           `json:"child_database,omitempty"`
 	Embed            *EmbedBlock           `json:"embed,omitempty"`
-	Image            *ImageBlock           `json:"image,omitempty"`
-	Video            *VideoBlock           `json:"video,omitempty"`
-	File             *FileBlock            `json:"file,omitempty"`
-	Pdf              *PDFBlock             `json:"pdf,omitempty"`
+	Image            *FileDescriptor       `json:"image,omitempty"`
+	Video            *FileDescriptor       `json:"video,omitempty"`
+	File             *FileDescriptor       `json:"file,omitempty"`
+	PDF              *FileDescriptor       `json:"pdf,omitempty"`
 	Bookmark         *BookmarkBlock        `json:"bookmark,omitempty"`
 	Equation         *EquationBlock        `json:"equation,omitempty"`
 	Divider          *DividerBlock         `json:"divider,omitempty"`
 	TableOfContents  *TableOfContentsBlock `json:"table_of_contents,omitempty"` // Table of contents block?
-	BreadCrumbBlocks *BreadCrumbBlock      `json:"breadcrumb_blocks,omitempty"` //WTF
-	ColumnList       *ColumnListBlock      `json:"column_list,omitempty"`       //Column Block?
-	Column           *ColumnBlock          `json:"column,omitempty"`            //row?
-	LinkPreview      *LinkPreviewBlock     `json:"link_preview,omitempty"`      //Link Privew blocks?
-	Template         *TemplateBlock        `json:"template,omitempty"`          //Tempalte Blocks?
-	LinkToPage       *LinkToPageBlock      `json:"link_to_page,omitempty"`      //Link To page BlocK?
+	BreadCrumb       *BreadCrumbBlock      `json:"breadcrumb,omitempty"`
+	ColumnList       *ColumnListBlock      `json:"column_list,omitempty"`  //Column Block?
+	Column           *ColumnBlock          `json:"column,omitempty"`       //row?
+	LinkPreview      *LinkPreviewBlock     `json:"link_preview,omitempty"` //Link Privew blocks?
+	Template         *TemplateBlock        `json:"template,omitempty"`     //Tempalte Blocks?
+	LinkToPage       *LinkToPageBlock      `json:"link_to_page,omitempty"` //Link To page BlocK?
 	SyncedBlock      *SyncedBlock          `json:"synced_block,omitempty"`
 	Table            *TableBlock           `json:"table,omitempty"`
 	TableRow         *TableRowBlock        `json:"table_row,omitempty"`
@@ -112,6 +112,7 @@ const (
 	NumberedListBlockType
 	ToDoBlockType
 	ToggleBlockType
+	CodeBlockType
 	ChildPageBlockType
 	ChildDatabaseBlockType
 	EmbedBlockType
@@ -125,6 +126,7 @@ const (
 	EquationBlockType
 	DividerBlockType
 	TableOfContentsBlockType
+	BreadCrumbBlockType
 	ColumnBlockType
 	ColumnListBlockType
 	LinkPreviewBlockType
@@ -145,6 +147,7 @@ var BlockTypeToString = map[BlockType]string{
 	NumberedListBlockType:    "numbered_list_item",
 	ToDoBlockType:            "to_do",
 	ToggleBlockType:          "toggle",
+	CodeBlockType:            "code",
 	ChildPageBlockType:       "child_page",
 	ChildDatabaseBlockType:   "child_database",
 	EmbedBlockType:           "embed",
@@ -158,6 +161,7 @@ var BlockTypeToString = map[BlockType]string{
 	EquationBlockType:        "equation",
 	DividerBlockType:         "divider",
 	TableOfContentsBlockType: "table_of_contents",
+	BreadCrumbBlockType:      "breadcrumb",
 	ColumnBlockType:          "column",
 	ColumnListBlockType:      "column_list",
 	LinkPreviewBlockType:     "link_preview",
@@ -178,6 +182,7 @@ var StringToBlockType = map[string]BlockType{
 	"numbered_list_item": NumberedListBlockType,
 	"to_do":              ToDoBlockType,
 	"toggle":             ToggleBlockType,
+	"code":               CodeBlockType,
 	"child_page":         ChildPageBlockType,
 	"child_database":     ChildDatabaseBlockType,
 	"embed":              EmbedBlockType,
@@ -191,6 +196,7 @@ var StringToBlockType = map[string]BlockType{
 	"equation":           EquationBlockType,
 	"divider":            DividerBlockType,
 	"table_of_contents":  TableOfContentsBlockType,
+	"breadcrumb":         BreadCrumbBlockType,
 	"column":             ColumnBlockType,
 	"column_list":        ColumnListBlockType,
 	"link_preview":       LinkPreviewBlockType,
@@ -225,33 +231,33 @@ func (p BlockType) MarshalJSON() ([]byte, error) {
 
 type TextBlock struct {
 	RichText []RichText `json:"rich_text"`
-	Color    *Color     `json:"color,omitempty"`
+	Color    Color      `json:"color"`
 	Children []Block    `json:"children,omitempty"`
 }
 
 type HeadingBlock struct {
 	RichText []RichText `json:"rich_text"`
-	Color    *Color     `json:"color,omitempty"`
+	Color    Color      `json:"color,omitempty"`
 }
 
 type CalloutBlock struct {
 	RichText []RichText      `json:"rich_text"`
 	Icon     *IconDescriptor `json:"icon,omitempty"`
-	Color    *Color          `json:"color,omitempty"`
+	Color    Color           `json:"color,omitempty"`
 	Children []Block         `json:"children,omitempty"`
 }
 
 type TodoBlock struct {
 	RichText []RichText `json:"rich_text"`
 	Checked  bool       `json:"checked"`
-	Color    *Color     `json:"color,omitempty"`
+	Color    Color      `json:"color,omitempty"`
 	Children []Block    `json:"children,omitempty"`
 }
 
 type CodeBlock struct {
 	RichText []RichText `json:"rich_text"`
 	Caption  []RichText `json:"caption"`
-	Language *Language  `json:"color,omitempty"`
+	Language Language   `json:"language,omitempty"`
 }
 
 type Language int
@@ -507,6 +513,8 @@ type ChildBlock struct {
 /*
 Embed blocks created via Notion API may differ of embed blocks created via UI
 Details: https://developers.notion.com/reference/block#embed-blocks
+Can it be returned in request? Because after inserting embed link into page its type transforming to another
+For isntace to bookmark. Example: https://{{notion-host}}/v1/blocks/74552d4f1c01447a8c7edd560e161520
 */
 type EmbedBlock struct {
 	Url string `json:"url"`
@@ -529,8 +537,8 @@ type PDFBlock struct {
 }
 
 type BookmarkBlock struct {
-	URL     string `json:"url"`
-	Caption string `json:"caption"`
+	URL     string     `json:"url"`
+	Caption []RichText `json:"caption"`
 }
 
 type EquationBlock struct {
@@ -540,7 +548,7 @@ type EquationBlock struct {
 type DividerBlock struct{}
 
 type TableOfContentsBlock struct {
-	Color *Color `json:"color,omitempty"`
+	Color Color `json:"color,omitempty"`
 }
 
 type BreadCrumbBlock struct{}

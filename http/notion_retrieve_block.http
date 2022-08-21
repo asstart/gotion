@@ -119,7 +119,7 @@ Content-Type: application/json
 
 #Get embed block
 # https://www.notion.so/Block-Reading-Testing-6d8c8ae0b4b9410eaf67f85cb151398f#4165c38ac6b3447fa4cf2de17d986589
-GET https://{{notion-host}}/v1/blocks/4165c38ac6b3447fa4cf2de17d986589 HTTP/1.1
+GET https://{{notion-host}}/v1/blocks/74552d4f1c01447a8c7edd560e161520 HTTP/1.1
 Authorization: Bearer {{notion-token}}
 Notion-Version: {{notion-version}}
 Content-Type: application/json
